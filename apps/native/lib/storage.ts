@@ -17,6 +17,8 @@ export async function loadState(): Promise<PersistedState> {
       tasks: parsed.tasks ?? [],
       history: parsed.history ?? [],
       dismissedHints: parsed.dismissedHints ?? [],
+      primaryGoalId: parsed.primaryGoalId ?? null,
+      session: parsed.session ?? null,
     };
   } catch {
     return emptyState;

@@ -33,6 +33,12 @@ export type Stats = {
   tasksSkipped: number;
 };
 
+export type FocusSession = {
+  taskId: string;
+  startedAt: string;
+  durationSec: number;
+};
+
 export type PersistedState = {
   onboarded: boolean;
   goals: Goal[];
@@ -40,6 +46,8 @@ export type PersistedState = {
   stats: Stats;
   history: DayRecord[];
   dismissedHints: string[];
+  primaryGoalId: string | null;
+  session: FocusSession | null;
 };
 
 export const emptyState: PersistedState = {
@@ -55,4 +63,6 @@ export const emptyState: PersistedState = {
   },
   history: [],
   dismissedHints: [],
+  primaryGoalId: null,
+  session: null,
 };

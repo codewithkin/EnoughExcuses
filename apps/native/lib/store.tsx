@@ -61,6 +61,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     },
     history: [],
     dismissedHints: [],
+    primaryGoalId: null,
+    session: null,
   }));
 
   useEffect(() => {
