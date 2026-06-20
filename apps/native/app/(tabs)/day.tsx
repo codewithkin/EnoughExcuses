@@ -1,16 +1,18 @@
 import { Ionicons } from "@expo/vector-icons";
-import { Pressable, Share, View } from "react-native";
+import { useRouter } from "expo-router";
+import { Pressable, View } from "react-native";
 
 import { Hint } from "@/components/hint";
 import { AnimatedRow, Card, SectionLabel } from "@/components/primitives";
 import { Screen, ScreenHeader } from "@/components/screen";
 import { TaskRow } from "@/components/task-row";
 import { Body, BodyMuted, Display, Label, Title } from "@/components/typography";
-import { formatDuration, isToday } from "@/lib/date";
+import { formatDateLabel, formatDuration, isToday } from "@/lib/date";
 import { useApp } from "@/lib/store";
 import { COLORS, FONTS, RADIUS } from "@/lib/theme";
 
 export default function Day() {
+  const router = useRouter();
   const { state, today } = useApp();
   const streak = state.stats.streak;
 
@@ -20,18 +22,13 @@ export default function Day() {
   const goalTitle = (goalId: string | null) =>
     state.goals.find((g) => g.id === goalId)?.title ?? undefined;
 
-  async function onShare() {
-    const message = `Today on LockedIn\nCompleted: ${today.completed}\nSkipped: ${today.skipped}\nFocus: ${formatDuration(today.focusSeconds)}\nStreak: ${streak} day${streak === 1 ? "" : "s"}`;
-    try {
-      await Share.share({ message });
-    } catch {
-      // dismissed
-    }
-  }
-
   return (
     <Screen>
-      <ScreenHeader title="Today's summary" subtitle="An honest mirror of the day." />
+      <ScreenHeader
+        title="Today's summary"
+        subtitle="An honest mirror of the day."
+        right={<Label style={{ marginTop: 8 }}>{formatDateLabel()}</Label>}
+      />
 
       <Card
         style={{
@@ -60,8 +57,8 @@ export default function Day() {
       </View>
 
       <Pressable
-        onPress={onShare}
-        style={{
+        onPress={() => router.push("/share")}
+        style={({ pressed }) => ({
           marginTop: 14,
           flexDirection: "row",
           alignItems: "center",
@@ -70,7 +67,8 @@ export default function Day() {
           borderRadius: RADIUS.pill,
           backgroundColor: COLORS.coral,
           paddingVertical: 16,
-        }}
+          opacity: pressed ? 0.9 : 1,
+        })}
       >
         <Ionicons name="share-outline" size={18} color={COLORS.ink} />
         <Body style={{ fontFamily: FONTS.sansSemibold }} color={COLORS.ink}>
