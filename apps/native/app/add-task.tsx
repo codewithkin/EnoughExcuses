@@ -1,14 +1,13 @@
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { Pressable, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { View } from "react-native";
 
 import { PrimaryButton } from "@/components/buttons";
 import { Chip, DurationPicker, Field } from "@/components/inputs";
+import { ModalScreen } from "@/components/modal-screen";
 import { SectionLabel } from "@/components/primitives";
-import { BodyMuted, Title } from "@/components/typography";
+import { BodyMuted } from "@/components/typography";
 import { useApp } from "@/lib/store";
-import { COLORS } from "@/lib/theme";
 
 export default function AddTask() {
   const router = useRouter();
@@ -24,17 +23,10 @@ export default function AddTask() {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.ink }} edges={["bottom"]}>
+    <ModalScreen title="New task">
       <View style={{ flex: 1, padding: 24 }}>
-        <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-          <Title>New task</Title>
-          <Pressable onPress={() => router.back()} hitSlop={10}>
-            <BodyMuted>Cancel</BodyMuted>
-          </Pressable>
-        </View>
-
         {state.goals.length > 0 ? (
-          <View style={{ marginTop: 24 }}>
+          <View>
             <SectionLabel>Goal</SectionLabel>
             <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
               {state.goals.map((g) => (
@@ -43,7 +35,7 @@ export default function AddTask() {
             </View>
           </View>
         ) : (
-          <BodyMuted style={{ marginTop: 24 }}>Add a goal first from the Goals tab.</BodyMuted>
+          <BodyMuted>Add a goal first from the Goals tab.</BodyMuted>
         )}
 
         <View style={{ marginTop: 24 }}>
@@ -66,6 +58,6 @@ export default function AddTask() {
         <View style={{ flex: 1 }} />
         <PrimaryButton label="Add to queue" onPress={submit} disabled={title.trim().length === 0} />
       </View>
-    </SafeAreaView>
+    </ModalScreen>
   );
 }

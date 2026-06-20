@@ -1,14 +1,12 @@
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { Pressable, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { View } from "react-native";
 
 import { PrimaryButton } from "@/components/buttons";
 import { Field } from "@/components/inputs";
+import { ModalScreen } from "@/components/modal-screen";
 import { SectionLabel } from "@/components/primitives";
-import { BodyMuted, Title } from "@/components/typography";
 import { useApp } from "@/lib/store";
-import { COLORS } from "@/lib/theme";
 
 export default function AddGoal() {
   const router = useRouter();
@@ -22,30 +20,21 @@ export default function AddGoal() {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.ink }} edges={["bottom"]}>
+    <ModalScreen title="New goal">
       <View style={{ flex: 1, padding: 24 }}>
-        <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-          <Title>New goal</Title>
-          <Pressable onPress={() => router.back()} hitSlop={10}>
-            <BodyMuted>Cancel</BodyMuted>
-          </Pressable>
-        </View>
-
-        <View style={{ marginTop: 24 }}>
-          <SectionLabel>What are you working toward?</SectionLabel>
-          <Field
-            value={title}
-            onChangeText={setTitle}
-            placeholder="Ship LockedIn v1"
-            autoFocus
-            returnKeyType="done"
-            onSubmitEditing={submit}
-          />
-        </View>
+        <SectionLabel>What are you working toward?</SectionLabel>
+        <Field
+          value={title}
+          onChangeText={setTitle}
+          placeholder="Ship LockedIn v1"
+          autoFocus
+          returnKeyType="done"
+          onSubmitEditing={submit}
+        />
 
         <View style={{ flex: 1 }} />
         <PrimaryButton label="Create goal" onPress={submit} disabled={title.trim().length === 0} />
       </View>
-    </SafeAreaView>
+    </ModalScreen>
   );
 }
