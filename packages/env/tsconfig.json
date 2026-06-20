@@ -1,0 +1,3 @@
+{
+  "extends": "@lockedin/config/tsconfig.base.json"
+}

@@ -1,0 +1,17 @@
+{
+  "expo": {
+    "scheme": "lockedin",
+    "userInterfaceStyle": "automatic",
+    "orientation": "default",
+    "web": {
+      "bundler": "metro"
+    },
+    "name": "lockedin",
+    "slug": "lockedin",
+    "plugins": ["expo-font"],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    }
+  }
+}
