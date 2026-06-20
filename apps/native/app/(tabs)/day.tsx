@@ -1,10 +1,11 @@
 import { Ionicons } from "@expo/vector-icons";
-import { Pressable, ScrollView, Share, Text, View } from "react-native";
+import { Pressable, ScrollView, Share, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { Body, BodyMuted, Caption, Display, Label, Title } from "@/components/typography";
 import { formatDuration, isToday } from "@/lib/date";
 import { useApp } from "@/lib/store";
-import { ACCENT, INK } from "@/lib/theme";
+import { COLORS, FONTS, RADIUS } from "@/lib/theme";
 
 export default function Day() {
   const { state, today } = useApp();
@@ -19,61 +20,59 @@ export default function Day() {
     try {
       await Share.share({ message });
     } catch {
-      // user dismissed
+      // dismissed
     }
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.ink }} edges={["top"]}>
       <ScrollView contentContainerStyle={{ padding: 24, paddingBottom: 48 }}>
-        <Text className="text-3xl font-bold text-foreground">Today</Text>
-        <Text className="mt-1 text-base text-muted">Your record for the day.</Text>
+        <Title>Today&apos;s summary</Title>
+        <BodyMuted style={{ marginTop: 4 }}>An honest mirror of the day.</BodyMuted>
 
-        <View
-          style={{ borderColor: "#1f1f1f", backgroundColor: "#121212" }}
-          className="mt-6 rounded-3xl border p-6"
-        >
-          <View className="flex-row justify-between">
-            <Stat label="Completed" value={String(today.completed)} />
-            <Stat label="Skipped" value={String(today.skipped)} />
-          </View>
-          <View className="mt-6 flex-row justify-between">
-            <Stat label="Focus time" value={formatDuration(today.focusSeconds)} />
-            <Stat label="Streak" value={`${streak}`} accent />
+        <View style={streakCard}>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
+            <Ionicons name="flame" size={28} color={COLORS.coral} />
+            <View>
+              <Display style={{ fontSize: 30, lineHeight: 32 }} color={COLORS.coral}>
+                {streak} day{streak === 1 ? "" : "s"}
+              </Display>
+              <Label style={{ marginTop: 2 }}>
+                Streak · {today.completed > 0 ? "still alive" : "at risk"}
+              </Label>
+            </View>
           </View>
         </View>
 
-        <Pressable
-          onPress={onShare}
-          style={{ backgroundColor: ACCENT }}
-          className="mt-4 flex-row items-center justify-center gap-2 rounded-2xl py-4"
-        >
-          <Ionicons name="share-outline" size={18} color={INK} />
-          <Text style={{ color: INK }} className="text-base font-semibold">
+        <View style={{ flexDirection: "row", gap: 10, marginTop: 12 }}>
+          <Stat label="Done" value={String(today.completed)} />
+          <Stat label="Skipped" value={String(today.skipped)} />
+          <Stat label="Focused" value={formatDuration(today.focusSeconds)} />
+        </View>
+
+        <Pressable onPress={onShare} style={shareBtn}>
+          <Ionicons name="share-outline" size={18} color={COLORS.ink} />
+          <Body style={{ fontFamily: FONTS.sansSemibold }} color={COLORS.ink}>
             Share today
-          </Text>
+          </Body>
         </Pressable>
 
-        <Text className="mt-9 mb-2 text-xs uppercase tracking-wide text-muted">Timeline</Text>
+        <Label style={{ marginTop: 32, marginBottom: 10 }}>Timeline</Label>
         {todayTasks.length === 0 ? (
-          <Text className="text-base text-muted">Nothing logged yet today.</Text>
+          <BodyMuted>Nothing logged yet today.</BodyMuted>
         ) : (
-          <View className="gap-2">
+          <View style={{ gap: 8 }}>
             {todayTasks.map((t) => {
               const done = t.status === "done";
               return (
-                <View
-                  key={t.id}
-                  style={{ borderColor: "#1f1f1f" }}
-                  className="flex-row items-center rounded-2xl border p-4"
-                >
+                <View key={t.id} style={row}>
                   <Ionicons
                     name={done ? "checkmark-circle" : "close-circle-outline"}
                     size={20}
-                    color={done ? ACCENT : "#666"}
+                    color={done ? COLORS.coral : COLORS.subtle}
                   />
-                  <Text className="ml-3 flex-1 text-base text-foreground">{t.title}</Text>
-                  <Text className="text-xs text-muted">{done ? `${t.durationMin}m` : "skipped"}</Text>
+                  <Body style={{ marginLeft: 12, flex: 1, fontSize: 15 }}>{t.title}</Body>
+                  <Caption>{done ? `${t.durationMin}m` : "skip"}</Caption>
                 </View>
               );
             })}
@@ -84,16 +83,49 @@ export default function Day() {
   );
 }
 
-function Stat({ label, value, accent }: { label: string; value: string; accent?: boolean }) {
+function Stat({ label, value }: { label: string; value: string }) {
   return (
-    <View>
-      <Text
-        style={accent ? { color: ACCENT } : undefined}
-        className="text-4xl font-bold text-foreground"
-      >
-        {value}
-      </Text>
-      <Text className="mt-1 text-xs uppercase tracking-wide text-muted">{label}</Text>
+    <View style={statCard}>
+      <Title style={{ fontSize: 26, lineHeight: 30 }}>{value}</Title>
+      <Label style={{ marginTop: 4, color: COLORS.subtle }}>{label}</Label>
     </View>
   );
 }
+
+const streakCard = {
+  marginTop: 20,
+  borderRadius: RADIUS.x2,
+  borderWidth: 1,
+  borderColor: COLORS.coralDeep,
+  backgroundColor: "rgba(255,107,74,0.07)",
+  padding: 20,
+} as const;
+
+const statCard = {
+  flex: 1,
+  borderRadius: RADIUS.xl,
+  borderWidth: 1,
+  borderColor: COLORS.line,
+  backgroundColor: COLORS.card,
+  padding: 16,
+} as const;
+
+const shareBtn = {
+  marginTop: 14,
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: 8,
+  borderRadius: RADIUS.pill,
+  backgroundColor: COLORS.coral,
+  paddingVertical: 16,
+} as const;
+
+const row = {
+  flexDirection: "row",
+  alignItems: "center",
+  borderRadius: RADIUS.lg,
+  borderWidth: 1,
+  borderColor: COLORS.line,
+  padding: 16,
+} as const;

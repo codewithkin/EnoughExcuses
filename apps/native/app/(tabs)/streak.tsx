@@ -1,10 +1,11 @@
 import { Ionicons } from "@expo/vector-icons";
-import { ScrollView, Text, View } from "react-native";
+import { ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { Body, BodyMuted, Caption, Label, Timer, Title } from "@/components/typography";
 import { formatDuration } from "@/lib/date";
 import { useApp } from "@/lib/store";
-import { ACCENT } from "@/lib/theme";
+import { COLORS, RADIUS } from "@/lib/theme";
 
 export default function Streak() {
   const { state } = useApp();
@@ -12,47 +13,46 @@ export default function Streak() {
   const history = state.history;
 
   return (
-    <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.ink }} edges={["top"]}>
       <ScrollView contentContainerStyle={{ padding: 24, paddingBottom: 48 }}>
-        <Text className="text-3xl font-bold text-foreground">Streak</Text>
+        <Title>Streak</Title>
 
-        <View className="items-center py-10">
-          <Ionicons name="flame" size={48} color={ACCENT} />
-          <Text style={{ color: ACCENT }} className="mt-3 text-7xl font-bold">
+        <View style={{ alignItems: "center", paddingVertical: 36 }}>
+          <Ionicons name="flame" size={44} color={COLORS.coral} />
+          <Timer style={{ marginTop: 8 }} color={COLORS.coral}>
             {streak}
-          </Text>
-          <Text className="text-base text-muted">
-            day{streak === 1 ? "" : "s"} locked in
-          </Text>
+          </Timer>
+          <BodyMuted>day{streak === 1 ? "" : "s"} locked in</BodyMuted>
         </View>
 
-        <View className="flex-row gap-3">
+        <View style={{ flexDirection: "row", gap: 10 }}>
           <MiniStat label="Tasks done" value={String(tasksCompleted)} />
           <MiniStat label="Skipped" value={String(tasksSkipped)} />
           <MiniStat label="Focus" value={formatDuration(totalFocusSeconds)} />
         </View>
 
-        <Text className="mt-9 mb-2 text-xs uppercase tracking-wide text-muted">History</Text>
+        <Label style={{ marginTop: 32, marginBottom: 10 }}>History</Label>
         {history.length === 0 ? (
-          <Text className="text-base text-muted">No history yet. Complete a task to begin.</Text>
+          <BodyMuted>No history yet. Complete a task to begin.</BodyMuted>
         ) : (
-          <View className="gap-2">
+          <View style={{ gap: 8 }}>
             {history.map((h) => {
               const kept = h.completed > 0;
               return (
-                <View
-                  key={h.date}
-                  style={{ borderColor: "#1f1f1f" }}
-                  className="flex-row items-center rounded-2xl border p-4"
-                >
+                <View key={h.date} style={row}>
                   <View
-                    style={{ backgroundColor: kept ? ACCENT : "#2a2a2a" }}
-                    className="mr-3 h-2.5 w-2.5 rounded-full"
+                    style={{
+                      width: 10,
+                      height: 10,
+                      borderRadius: 5,
+                      marginRight: 12,
+                      backgroundColor: kept ? COLORS.coral : "#2a2a30",
+                    }}
                   />
-                  <Text className="flex-1 text-base text-foreground">{h.date}</Text>
-                  <Text className="text-xs text-muted">
+                  <Body style={{ flex: 1, fontSize: 15 }}>{h.date}</Body>
+                  <Caption>
                     {h.completed} done · {formatDuration(h.focusSeconds)}
-                  </Text>
+                  </Caption>
                 </View>
               );
             })}
@@ -65,12 +65,27 @@ export default function Streak() {
 
 function MiniStat({ label, value }: { label: string; value: string }) {
   return (
-    <View
-      style={{ borderColor: "#1f1f1f", backgroundColor: "#121212" }}
-      className="flex-1 rounded-2xl border p-4"
-    >
-      <Text className="text-xl font-bold text-foreground">{value}</Text>
-      <Text className="mt-1 text-xs text-muted">{label}</Text>
+    <View style={card}>
+      <Title style={{ fontSize: 22, lineHeight: 26 }}>{value}</Title>
+      <Caption style={{ marginTop: 4 }}>{label}</Caption>
     </View>
   );
 }
+
+const card = {
+  flex: 1,
+  borderRadius: RADIUS.xl,
+  borderWidth: 1,
+  borderColor: COLORS.line,
+  backgroundColor: COLORS.card,
+  padding: 16,
+} as const;
+
+const row = {
+  flexDirection: "row",
+  alignItems: "center",
+  borderRadius: RADIUS.lg,
+  borderWidth: 1,
+  borderColor: COLORS.line,
+  padding: 16,
+} as const;

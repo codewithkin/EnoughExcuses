@@ -1,10 +1,11 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
-import { Pressable, ScrollView, Text, TextInput, View } from "react-native";
+import { Pressable, ScrollView, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { Body, BodyMuted, BodyStrong, Caption, Label, Title } from "@/components/typography";
 import { useApp } from "@/lib/store";
-import { ACCENT, DURATIONS, INK } from "@/lib/theme";
+import { COLORS, DURATIONS, FONTS, RADIUS } from "@/lib/theme";
 
 export default function Plan() {
   const { state, queue, addGoal, addTask, removeTask, moveTask } = useApp();
@@ -31,140 +32,119 @@ export default function Plan() {
     setNewTask("");
   }
 
+  const canAdd = !!selectedGoalId && newTask.trim().length > 0;
+
   return (
-    <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.ink }} edges={["top"]}>
       <ScrollView
         contentContainerStyle={{ padding: 24, paddingBottom: 48 }}
         keyboardShouldPersistTaps="handled"
       >
-        <Text className="text-3xl font-bold text-foreground">Plan</Text>
-        <Text className="mt-1 text-base text-muted">Set goals, queue the work.</Text>
+        <Title>Plan</Title>
+        <BodyMuted style={{ marginTop: 4 }}>Set goals, queue the work.</BodyMuted>
 
-        <Text className="mt-8 mb-2 text-xs uppercase tracking-wide text-muted">Goals</Text>
-        <View className="flex-row flex-wrap gap-2">
+        <Label style={{ marginTop: 28, marginBottom: 10 }}>Goals</Label>
+        <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
           {state.goals.map((g) => {
             const selected = g.id === selectedGoalId;
             return (
-              <Pressable
-                key={g.id}
-                onPress={() => setSelectedGoalId(g.id)}
-                style={{
-                  backgroundColor: selected ? ACCENT : "transparent",
-                  borderColor: selected ? ACCENT : "#404040",
-                }}
-                className="rounded-full border px-4 py-2"
-              >
-                <Text
-                  style={{ color: selected ? INK : "#a3a3a3" }}
-                  className="text-sm font-medium"
+              <Pressable key={g.id} onPress={() => setSelectedGoalId(g.id)} style={chip(selected)}>
+                <Body
+                  style={{ fontSize: 14, fontFamily: FONTS.sansMedium }}
+                  color={selected ? COLORS.ink : COLORS.subtle}
                 >
                   {g.title}
-                </Text>
+                </Body>
               </Pressable>
             );
           })}
         </View>
 
-        <View className="mt-3 flex-row gap-2">
+        <View style={{ marginTop: 12, flexDirection: "row", gap: 8 }}>
           <TextInput
             value={newGoal}
             onChangeText={setNewGoal}
             placeholder="New goal"
-            placeholderTextColor="#666"
-            className="flex-1 rounded-xl border border-neutral-700 px-4 py-3 text-base text-foreground"
+            placeholderTextColor={COLORS.subtle}
+            style={[inputStyle, { flex: 1, marginTop: 0 }]}
           />
-          <Pressable
-            onPress={onAddGoal}
-            style={{ borderColor: "#404040" }}
-            className="items-center justify-center rounded-xl border px-4"
-          >
-            <Ionicons name="add" size={22} color="#a3a3a3" />
+          <Pressable onPress={onAddGoal} style={iconBtn}>
+            <Ionicons name="add" size={22} color={COLORS.subtle} />
           </Pressable>
         </View>
 
-        <Text className="mt-8 mb-2 text-xs uppercase tracking-wide text-muted">Add a task</Text>
+        <Label style={{ marginTop: 28, marginBottom: 10 }}>Add a task</Label>
         <TextInput
           value={newTask}
           onChangeText={setNewTask}
           placeholder={selectedGoalId ? "What's the next thing?" : "Create a goal first"}
-          placeholderTextColor="#666"
+          placeholderTextColor={COLORS.subtle}
           editable={!!selectedGoalId}
-          className="rounded-xl border border-neutral-700 px-4 py-3 text-base text-foreground"
+          style={[inputStyle, { marginTop: 0 }]}
         />
-        <View className="mt-3 flex-row gap-2">
-          {DURATIONS.map((d) => {
-            const selected = d === duration;
-            return (
-              <Pressable
-                key={d}
-                onPress={() => setDuration(d)}
-                style={{
-                  backgroundColor: selected ? ACCENT : "transparent",
-                  borderColor: selected ? ACCENT : "#404040",
-                }}
-                className="flex-1 items-center rounded-xl border py-3"
+        <View style={{ marginTop: 12, flexDirection: "row", gap: 8 }}>
+          {DURATIONS.map((d) => (
+            <Pressable key={d} onPress={() => setDuration(d)} style={durationChip(d === duration)}>
+              <Body
+                style={{ fontFamily: FONTS.monoMedium, fontSize: 14 }}
+                color={d === duration ? COLORS.ink : COLORS.subtle}
               >
-                <Text
-                  style={{ color: selected ? INK : "#a3a3a3" }}
-                  className="text-sm font-semibold"
-                >
-                  {d}m
-                </Text>
-              </Pressable>
-            );
-          })}
+                {d}
+              </Body>
+            </Pressable>
+          ))}
         </View>
         <Pressable
           onPress={onAddTask}
-          disabled={!selectedGoalId || newTask.trim().length === 0}
+          disabled={!canAdd}
           style={{
-            backgroundColor: !selectedGoalId || newTask.trim().length === 0 ? "#3A2418" : ACCENT,
+            marginTop: 12,
+            alignItems: "center",
+            borderRadius: RADIUS.pill,
+            backgroundColor: canAdd ? COLORS.coral : "#3A2418",
+            paddingVertical: 14,
           }}
-          className="mt-3 items-center rounded-xl py-3"
         >
-          <Text style={{ color: INK }} className="text-base font-semibold">
+          <Body
+            style={{ fontFamily: FONTS.sansSemibold }}
+            color={canAdd ? COLORS.ink : "#7A5238"}
+          >
             Add to queue
-          </Text>
+          </Body>
         </Pressable>
 
-        <Text className="mt-9 mb-2 text-xs uppercase tracking-wide text-muted">
-          Queue ({queue.length})
-        </Text>
+        <Label style={{ marginTop: 32, marginBottom: 10 }}>Queue ({queue.length})</Label>
         {queue.length === 0 ? (
-          <Text className="text-base text-muted">Nothing queued yet.</Text>
+          <BodyMuted>Nothing queued yet.</BodyMuted>
         ) : (
-          <View className="gap-2">
+          <View style={{ gap: 8 }}>
             {queue.map((t, i) => {
               const goal = state.goals.find((g) => g.id === t.goalId);
               return (
-                <View
-                  key={t.id}
-                  style={{ borderColor: "#1f1f1f", backgroundColor: "#121212" }}
-                  className="flex-row items-center rounded-2xl border p-4"
-                >
-                  <View className="flex-1">
-                    <Text className="text-base font-medium text-foreground">{t.title}</Text>
-                    <Text className="mt-0.5 text-xs text-muted">
+                <View key={t.id} style={card}>
+                  <View style={{ flex: 1 }}>
+                    <BodyStrong style={{ fontSize: 15 }}>{t.title}</BodyStrong>
+                    <Caption style={{ marginTop: 2 }}>
                       {goal ? `${goal.title} · ` : ""}
                       {t.durationMin}m
-                    </Text>
+                    </Caption>
                   </View>
-                  <Pressable onPress={() => moveTask(t.id, "up")} disabled={i === 0} className="px-2">
-                    <Ionicons name="chevron-up" size={20} color={i === 0 ? "#333" : "#a3a3a3"} />
+                  <Pressable onPress={() => moveTask(t.id, "up")} disabled={i === 0} style={{ paddingHorizontal: 8 }}>
+                    <Ionicons name="chevron-up" size={20} color={i === 0 ? "#333" : COLORS.subtle} />
                   </Pressable>
                   <Pressable
                     onPress={() => moveTask(t.id, "down")}
                     disabled={i === queue.length - 1}
-                    className="px-2"
+                    style={{ paddingHorizontal: 8 }}
                   >
                     <Ionicons
                       name="chevron-down"
                       size={20}
-                      color={i === queue.length - 1 ? "#333" : "#a3a3a3"}
+                      color={i === queue.length - 1 ? "#333" : COLORS.subtle}
                     />
                   </Pressable>
-                  <Pressable onPress={() => removeTask(t.id)} className="pl-2">
-                    <Ionicons name="trash-outline" size={18} color="#7a7a7a" />
+                  <Pressable onPress={() => removeTask(t.id)} style={{ paddingLeft: 8 }}>
+                    <Ionicons name="trash-outline" size={18} color="#6b6b73" />
                   </Pressable>
                 </View>
               );
@@ -174,4 +154,59 @@ export default function Plan() {
       </ScrollView>
     </SafeAreaView>
   );
+}
+
+const inputStyle = {
+  marginTop: 0,
+  borderWidth: 1,
+  borderColor: COLORS.line,
+  backgroundColor: COLORS.elevated,
+  borderRadius: RADIUS.lg,
+  paddingHorizontal: 16,
+  paddingVertical: 14,
+  fontFamily: FONTS.sans,
+  fontSize: 16,
+  color: COLORS.fg,
+} as const;
+
+const iconBtn = {
+  alignItems: "center",
+  justifyContent: "center",
+  borderRadius: RADIUS.lg,
+  borderWidth: 1,
+  borderColor: COLORS.line,
+  paddingHorizontal: 16,
+} as const;
+
+const card = {
+  flexDirection: "row",
+  alignItems: "center",
+  borderRadius: RADIUS.x2,
+  borderWidth: 1,
+  borderColor: COLORS.line,
+  backgroundColor: COLORS.card,
+  padding: 16,
+} as const;
+
+function chip(selected: boolean) {
+  return {
+    borderRadius: RADIUS.pill,
+    borderWidth: 1,
+    borderColor: selected ? COLORS.coral : COLORS.line,
+    backgroundColor: selected ? COLORS.coral : "transparent",
+    paddingHorizontal: 16,
+    paddingVertical: 9,
+  } as const;
+}
+
+function durationChip(selected: boolean) {
+  return {
+    flex: 1,
+    alignItems: "center",
+    borderRadius: RADIUS.md,
+    borderWidth: 1,
+    borderColor: selected ? COLORS.coral : COLORS.line,
+    backgroundColor: selected ? COLORS.coral : "transparent",
+    paddingVertical: 13,
+  } as const;
 }

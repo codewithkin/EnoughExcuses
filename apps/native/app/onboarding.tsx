@@ -1,11 +1,14 @@
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { Pressable, Text, TextInput, View } from "react-native";
+import { Pressable, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { PrimaryButton } from "@/components/buttons";
+import { Body, BodyMuted, Caption, Display, Label } from "@/components/typography";
 import { useApp } from "@/lib/store";
-import { ACCENT, DURATIONS, INK } from "@/lib/theme";
+import { COLORS, DURATIONS, FONTS, RADIUS } from "@/lib/theme";
+
+const STARTERS = ["Get fit", "Write every day", "Launch a side project", "Read more"];
 
 export default function Onboarding() {
   const router = useRouter();
@@ -21,100 +24,115 @@ export default function Onboarding() {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-background">
-      <View className="flex-1 justify-center px-7">
+    <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.ink }}>
+      <View style={{ flex: 1, paddingHorizontal: 28 }}>
+        <Progress step={step} />
+
         {step === 0 && (
-          <View>
-            <Text style={{ color: ACCENT }} className="mb-5 text-xs font-semibold uppercase tracking-[3px]">
-              LockedIn
-            </Text>
-            <Text className="text-4xl font-bold leading-tight text-foreground">
-              Stop scrolling.{"\n"}Start executing.
-            </Text>
-            <Text className="mt-4 text-base text-muted">
-              One task at a time. A timer runs. You do the work. That&apos;s the whole thing.
-            </Text>
-            <View className="mt-10">
+          <View style={{ flex: 1, justifyContent: "flex-end", paddingBottom: 8 }}>
+            <Label style={{ marginBottom: 12 }}>12,000 people show up daily</Label>
+            <Display>Stop planning.{"\n"}Start executing.</Display>
+            <Body color={COLORS.subtle} style={{ marginTop: 16 }}>
+              One task. A timer runs. You hit Done or Skip. That&apos;s the whole app.
+            </Body>
+            <View style={{ marginTop: 28 }}>
               <PrimaryButton label="Lock in" onPress={() => setStep(1)} />
             </View>
+            <Caption style={{ marginTop: 16, textAlign: "center", fontFamily: FONTS.mono }}>
+              No account. No setup. Nothing to lose but the excuses.
+            </Caption>
           </View>
         )}
 
         {step === 1 && (
-          <View>
-            <Text className="text-3xl font-bold leading-tight text-foreground">
-              Here&apos;s how it works.
-            </Text>
-            <View className="mt-8 gap-5">
-              <Row n="1" text="Your current task shows up. The timer starts on its own." />
-              <Row n="2" text="Do the one thing in front of you. Nothing else." />
-              <Row n="3" text="Hit Done or Skip. The next task loads instantly." />
+          <View style={{ flex: 1, justifyContent: "center" }}>
+            <Display style={{ fontSize: 34, lineHeight: 38 }}>What are you working toward?</Display>
+            <BodyMuted style={{ marginTop: 12 }}>
+              Tasks live under a goal. Start with one — add more later.
+            </BodyMuted>
+
+            <TextInput
+              value={goal}
+              onChangeText={setGoal}
+              placeholder="Ship LockedIn v1"
+              placeholderTextColor={COLORS.subtle}
+              style={inputStyle}
+            />
+
+            <Label style={{ marginTop: 24, marginBottom: 10 }}>Or pick a starter</Label>
+            <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
+              {STARTERS.map((s) => (
+                <Pressable key={s} onPress={() => setGoal(s)} style={chip(goal === s)}>
+                  <Body
+                    style={{ fontSize: 14, fontFamily: FONTS.sansMedium }}
+                    color={goal === s ? COLORS.ink : COLORS.subtle}
+                  >
+                    {s}
+                  </Body>
+                </Pressable>
+              ))}
             </View>
-            <View className="mt-10">
-              <PrimaryButton label="Got it" onPress={() => setStep(2)} />
+
+            <View style={{ marginTop: 28 }}>
+              <PrimaryButton
+                label="Next"
+                onPress={() => setStep(2)}
+                disabled={goal.trim().length === 0}
+              />
             </View>
+            <Caption style={{ marginTop: 16, textAlign: "center", fontFamily: FONTS.mono }}>
+              One goal is enough to begin.
+            </Caption>
           </View>
         )}
 
         {step === 2 && (
-          <View>
-            <Text className="text-3xl font-bold leading-tight text-foreground">
-              What are you working toward?
-            </Text>
-            <Text className="mt-2 text-base text-muted">Pick one real goal for right now.</Text>
+          <View style={{ flex: 1, justifyContent: "center" }}>
+            <Display style={{ fontSize: 34, lineHeight: 38 }}>What&apos;s the one thing?</Display>
+            <BodyMuted style={{ marginTop: 12 }}>
+              Something real you can do right now — not a someday.
+            </BodyMuted>
 
-            <Text className="mt-7 mb-2 text-xs uppercase tracking-wide text-muted">Goal</Text>
-            <TextInput
-              value={goal}
-              onChangeText={setGoal}
-              placeholder="Ship the landing page"
-              placeholderTextColor="#666"
-              className="rounded-2xl border border-neutral-700 px-4 py-4 text-base text-foreground"
-            />
+            <View style={{ flexDirection: "row", marginTop: 18 }}>
+              <View style={goalTag}>
+                <Label color={COLORS.coral} style={{ letterSpacing: 1.5 }}>
+                  Under · {goal || "your goal"}
+                </Label>
+              </View>
+            </View>
 
-            <Text className="mt-5 mb-2 text-xs uppercase tracking-wide text-muted">
-              First task
-            </Text>
             <TextInput
               value={task}
               onChangeText={setTask}
-              placeholder="Write the hero section"
-              placeholderTextColor="#666"
-              className="rounded-2xl border border-neutral-700 px-4 py-4 text-base text-foreground"
+              placeholder="Write the Q3 narrative"
+              placeholderTextColor={COLORS.subtle}
+              style={inputStyle}
             />
 
-            <Text className="mt-5 mb-2 text-xs uppercase tracking-wide text-muted">Focus block</Text>
-            <View className="flex-row gap-2">
-              {DURATIONS.map((d) => {
-                const selected = d === duration;
-                return (
-                  <Pressable
-                    key={d}
-                    onPress={() => setDuration(d)}
-                    style={{
-                      backgroundColor: selected ? ACCENT : "transparent",
-                      borderColor: selected ? ACCENT : "#404040",
-                    }}
-                    className="flex-1 items-center rounded-xl border py-3"
+            <Label style={{ marginTop: 24, marginBottom: 10 }}>Block length</Label>
+            <View style={{ flexDirection: "row", gap: 8 }}>
+              {DURATIONS.map((d) => (
+                <Pressable key={d} onPress={() => setDuration(d)} style={durationChip(d === duration)}>
+                  <Body
+                    style={{ fontFamily: FONTS.monoMedium, fontSize: 14 }}
+                    color={d === duration ? COLORS.ink : COLORS.subtle}
                   >
-                    <Text
-                      style={{ color: selected ? INK : "#a3a3a3" }}
-                      className="text-sm font-semibold"
-                    >
-                      {d}m
-                    </Text>
-                  </Pressable>
-                );
-              })}
+                    {d}
+                  </Body>
+                </Pressable>
+              ))}
             </View>
 
-            <View className="mt-9">
+            <View style={{ marginTop: 28 }}>
               <PrimaryButton
-                label="Start the loop"
+                label="Start the timer"
                 onPress={finish}
                 disabled={task.trim().length === 0}
               />
             </View>
+            <Caption style={{ marginTop: 16, textAlign: "center", fontFamily: FONTS.mono }}>
+              The clock runs the second you tap.
+            </Caption>
           </View>
         )}
       </View>
@@ -122,13 +140,65 @@ export default function Onboarding() {
   );
 }
 
-function Row({ n, text }: { n: string; text: string }) {
+function Progress({ step }: { step: number }) {
   return (
-    <View className="flex-row items-start gap-4">
-      <Text style={{ color: ACCENT }} className="text-lg font-bold">
-        {n}
-      </Text>
-      <Text className="flex-1 text-base text-foreground">{text}</Text>
+    <View style={{ flexDirection: "row", gap: 6, paddingTop: 12 }}>
+      {[0, 1, 2].map((i) => (
+        <View
+          key={i}
+          style={{
+            flex: 1,
+            height: 3,
+            borderRadius: 2,
+            backgroundColor: i <= step ? COLORS.coral : COLORS.line,
+          }}
+        />
+      ))}
     </View>
   );
 }
+
+const inputStyle = {
+  marginTop: 20,
+  borderWidth: 1,
+  borderColor: COLORS.line,
+  backgroundColor: COLORS.elevated,
+  borderRadius: RADIUS.lg,
+  paddingHorizontal: 16,
+  paddingVertical: 16,
+  fontFamily: FONTS.sans,
+  fontSize: 16,
+  color: COLORS.fg,
+} as const;
+
+function chip(selected: boolean) {
+  return {
+    borderRadius: RADIUS.pill,
+    borderWidth: 1,
+    borderColor: selected ? COLORS.coral : COLORS.line,
+    backgroundColor: selected ? COLORS.coral : "transparent",
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+  } as const;
+}
+
+function durationChip(selected: boolean) {
+  return {
+    flex: 1,
+    alignItems: "center",
+    borderRadius: RADIUS.md,
+    borderWidth: 1,
+    borderColor: selected ? COLORS.coral : COLORS.line,
+    backgroundColor: selected ? COLORS.coral : "transparent",
+    paddingVertical: 14,
+  } as const;
+}
+
+const goalTag = {
+  borderRadius: RADIUS.pill,
+  borderWidth: 1,
+  borderColor: COLORS.coralDeep,
+  backgroundColor: "rgba(255,107,74,0.08)",
+  paddingHorizontal: 12,
+  paddingVertical: 6,
+} as const;

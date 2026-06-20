@@ -2,13 +2,14 @@ import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import { useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
-import { Pressable, Text, View } from "react-native";
+import { Pressable, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { PrimaryButton } from "@/components/buttons";
+import { BodyMuted, Caption, Label, MonoTimer, Title } from "@/components/typography";
 import { formatClock } from "@/lib/date";
 import { useApp } from "@/lib/store";
-import { ACCENT } from "@/lib/theme";
+import { COLORS } from "@/lib/theme";
 
 export default function Focus() {
   const router = useRouter();
@@ -34,16 +35,14 @@ export default function Focus() {
 
   if (!currentTask) {
     return (
-      <SafeAreaView className="flex-1 bg-background">
-        <View className="flex-1 items-center justify-center px-8">
-          <Ionicons name="checkmark-done-circle-outline" size={56} color="#3f3f3f" />
-          <Text className="mt-5 text-center text-2xl font-semibold text-foreground">
-            Nothing queued.
-          </Text>
-          <Text className="mt-2 text-center text-base text-muted">
+      <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.ink }}>
+        <View style={{ flex: 1, alignItems: "center", justifyContent: "center", paddingHorizontal: 32 }}>
+          <Ionicons name="checkmark-done-circle-outline" size={56} color="#3f3f46" />
+          <Title style={{ marginTop: 20, textAlign: "center" }}>Nothing queued.</Title>
+          <BodyMuted style={{ marginTop: 8, textAlign: "center" }}>
             Add a task and you&apos;re straight back in the loop.
-          </Text>
-          <View className="mt-8 w-full">
+          </BodyMuted>
+          <View style={{ marginTop: 28, width: "100%" }}>
             <PrimaryButton label="Add a task" onPress={() => router.push("/plan")} />
           </View>
         </View>
@@ -67,39 +66,38 @@ export default function Focus() {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-background">
-      <View className="flex-1 px-7">
-        <View className="items-center pt-6">
+    <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.ink }}>
+      <View style={{ flex: 1, paddingHorizontal: 28 }}>
+        <View style={{ alignItems: "center", paddingTop: 16 }}>
+          <Label>Now · Focusing</Label>
           {goal ? (
-            <Text style={{ color: ACCENT }} className="text-xs font-semibold uppercase tracking-[2px]">
+            <Caption style={{ marginTop: 6 }} color={COLORS.subtle}>
               {goal.title}
-            </Text>
+            </Caption>
           ) : null}
         </View>
 
-        <View className="flex-1 items-center justify-center">
-          <Text className="text-center text-3xl font-bold leading-snug text-foreground">
-            {currentTask.title}
-          </Text>
-          <Text
-            style={{ color: timeUp ? ACCENT : "#fafafa" }}
-            className="mt-10 text-7xl font-bold tracking-tight"
+        <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+          <Title style={{ textAlign: "center" }}>{currentTask.title}</Title>
+          <MonoTimer
+            style={{ marginTop: 32 }}
+            color={timeUp ? COLORS.coral : COLORS.fg}
           >
             {formatClock(secondsLeft)}
-          </Text>
-          <Text className="mt-3 text-sm text-muted">
+          </MonoTimer>
+          <Caption style={{ marginTop: 10 }}>
             {timeUp
               ? "Time's up — close it out."
               : remainingAfter > 0
                 ? `${remainingAfter} more after this`
                 : "Last one in the queue"}
-          </Text>
+          </Caption>
         </View>
 
-        <View className="gap-3 pb-4">
+        <View style={{ gap: 8, paddingBottom: 12 }}>
           <PrimaryButton label="Done" onPress={onDone} haptic={false} />
-          <Pressable onPress={onSkip} className="items-center py-3">
-            <Text className="text-base font-medium text-muted">Skip</Text>
+          <Pressable onPress={onSkip} style={{ alignItems: "center", paddingVertical: 14 }}>
+            <BodyMuted style={{ fontSize: 15 }}>Skip</BodyMuted>
           </Pressable>
         </View>
       </View>
