@@ -19,6 +19,7 @@ type AppContextType = {
   completeTask: (id: string, focusSeconds: number) => void;
   skipTask: (id: string) => void;
   completeOnboarding: (goalTitle: string, taskTitle: string, durationMin: number) => void;
+  hideHintForever: (id: string) => void;
 };
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -58,6 +59,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       tasksSkipped: 0,
     },
     history: [],
+    dismissedHints: [],
   }));
 
   useEffect(() => {
@@ -196,6 +198,14 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     [],
   );
 
+  const hideHintForever = useCallback((id: string) => {
+    setState((s) =>
+      s.dismissedHints.includes(id)
+        ? s
+        : { ...s, dismissedHints: [...s.dismissedHints, id] },
+    );
+  }, []);
+
   const currentTask = useMemo(
     () => state.tasks.find((t) => t.status === "pending") ?? null,
     [state.tasks],
@@ -217,6 +227,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       completeTask,
       skipTask,
       completeOnboarding,
+      hideHintForever,
     }),
     [
       ready,
@@ -231,6 +242,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       completeTask,
       skipTask,
       completeOnboarding,
+      hideHintForever,
     ],
   );
 

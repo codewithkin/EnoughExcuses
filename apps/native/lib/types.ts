@@ -39,6 +39,7 @@ export type PersistedState = {
   tasks: Task[];
   stats: Stats;
   history: DayRecord[];
+  dismissedHints: string[];
 };
 
 export const emptyState: PersistedState = {
@@ -53,4 +54,5 @@ export const emptyState: PersistedState = {
     tasksSkipped: 0,
   },
   history: [],
+  dismissedHints: [],
 };
