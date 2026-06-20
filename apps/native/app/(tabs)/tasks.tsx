@@ -1,85 +1,143 @@
+import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { Pressable, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import ReorderableList, {
+  reorderItems,
+  useIsActive,
+  useReorderableDrag,
+  type ReorderableListReorderEvent,
+} from "react-native-reorderable-list";
 
 import { Hint } from "@/components/hint";
-import { AddRow, AnimatedRow, SectionLabel } from "@/components/primitives";
-import { Screen, ScreenHeader } from "@/components/screen";
+import { AddRow, SectionLabel } from "@/components/primitives";
+import { ScreenHeader } from "@/components/screen";
 import { BodyMuted, Label } from "@/components/typography";
 import { TaskRow } from "@/components/task-row";
 import { completedToday } from "@/lib/selectors";
 import { useApp } from "@/lib/store";
+import { COLORS } from "@/lib/theme";
+import { type Task } from "@/lib/types";
 
 export default function Tasks() {
   const router = useRouter();
-  const { state, currentTask, queue, moveTask, removeTask } = useApp();
+  const { state, currentTask, queue, removeTask, reorderQueue } = useApp();
 
   const upNext = queue.filter((t) => t.id !== currentTask?.id);
   const done = completedToday(state.tasks);
   const goalTitle = (goalId: string | null) =>
     state.goals.find((g) => g.id === goalId)?.title ?? undefined;
 
+  function onReorder({ from, to }: ReorderableListReorderEvent) {
+    const next = reorderItems(upNext, from, to);
+    const ids = [currentTask?.id, ...next.map((t) => t.id)].filter(
+      (id): id is string => Boolean(id),
+    );
+    reorderQueue(ids);
+  }
+
   return (
-    <Screen>
-      <ScreenHeader
-        title="Today"
-        right={
-          <Label style={{ marginTop: 8 }}>
-            {currentTask ? "1 running · " : ""}
-            {upNext.length} next
-          </Label>
+    <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.ink }} edges={["top"]}>
+      <ReorderableList
+        data={upNext}
+        keyExtractor={(t) => t.id}
+        onReorder={onReorder}
+        contentContainerStyle={{ padding: 24, paddingBottom: 56 }}
+        showsVerticalScrollIndicator={false}
+        renderItem={({ item, index }) => (
+          <DraggableTaskRow
+            task={item}
+            index={index}
+            goalTitle={goalTitle(item.goalId)}
+            onRemove={() => removeTask(item.id)}
+          />
+        )}
+        ListHeaderComponent={
+          <View>
+            <ScreenHeader
+              title="Today"
+              right={
+                <Label style={{ marginTop: 8 }}>
+                  {currentTask ? "1 running · " : ""}
+                  {upNext.length} next
+                </Label>
+              }
+            />
+
+            <View style={{ marginTop: 16 }}>
+              <Hint id="tasks.reorder">
+                Hold the handle to drag. Whatever sits on top runs next.
+              </Hint>
+            </View>
+
+            {currentTask ? (
+              <View style={{ marginTop: 20, marginBottom: 4 }}>
+                <SectionLabel>In progress</SectionLabel>
+                <Pressable onPress={() => router.push("/focus")}>
+                  <TaskRow task={currentTask} variant="running" goalTitle={goalTitle(currentTask.goalId)} />
+                </Pressable>
+              </View>
+            ) : null}
+
+            <View style={{ marginTop: 16 }}>
+              <SectionLabel>Up next</SectionLabel>
+              {upNext.length === 0 ? (
+                <BodyMuted style={{ marginBottom: 12 }}>Nothing queued.</BodyMuted>
+              ) : null}
+            </View>
+          </View>
+        }
+        ListFooterComponent={
+          <View>
+            <View style={{ marginTop: upNext.length === 0 ? 0 : 8 }}>
+              <AddRow label="Add a task" onPress={() => router.push("/add-task")} />
+            </View>
+
+            {done.length > 0 ? (
+              <View style={{ marginTop: 24 }}>
+                <SectionLabel>Completed</SectionLabel>
+                <View style={{ gap: 8 }}>
+                  {done.map((t) => (
+                    <TaskRow key={t.id} task={t} variant="done" goalTitle={goalTitle(t.goalId)} />
+                  ))}
+                </View>
+              </View>
+            ) : null}
+          </View>
         }
       />
+    </SafeAreaView>
+  );
+}
 
-      <View style={{ marginTop: 16 }}>
-        <Hint id="tasks.reorder">
-          Reorder with the arrows. Whatever sits on top runs next.
-        </Hint>
-      </View>
+function DraggableTaskRow({
+  task,
+  index,
+  goalTitle,
+  onRemove,
+}: {
+  task: Task;
+  index: number;
+  goalTitle?: string;
+  onRemove: () => void;
+}) {
+  const drag = useReorderableDrag();
+  const isActive = useIsActive();
 
-      {currentTask ? (
-        <View style={{ marginTop: 20 }}>
-          <SectionLabel>In progress</SectionLabel>
-          <Pressable onPress={() => router.push("/focus")}>
-            <TaskRow task={currentTask} variant="running" goalTitle={goalTitle(currentTask.goalId)} />
+  return (
+    <View style={{ marginBottom: 8 }}>
+      <TaskRow
+        task={task}
+        index={index}
+        goalTitle={goalTitle}
+        active={isActive}
+        onRemove={onRemove}
+        dragHandle={
+          <Pressable onLongPress={drag} delayLongPress={120} hitSlop={10} style={{ paddingLeft: 4 }}>
+            <Ionicons name="reorder-three" size={22} color={COLORS.subtle} />
           </Pressable>
-        </View>
-      ) : null}
-
-      <View style={{ marginTop: 20 }}>
-        <SectionLabel>Up next</SectionLabel>
-        {upNext.length === 0 ? (
-          <BodyMuted style={{ marginBottom: 12 }}>Nothing queued.</BodyMuted>
-        ) : (
-          <View style={{ gap: 8, marginBottom: 8 }}>
-            {upNext.map((t, i) => (
-              <AnimatedRow key={t.id} index={i}>
-                <TaskRow
-                  task={t}
-                  index={i}
-                  goalTitle={goalTitle(t.goalId)}
-                  canMoveUp
-                  canMoveDown={i < upNext.length - 1}
-                  onMoveUp={() => moveTask(t.id, "up")}
-                  onMoveDown={() => moveTask(t.id, "down")}
-                  onRemove={() => removeTask(t.id)}
-                />
-              </AnimatedRow>
-            ))}
-          </View>
-        )}
-        <AddRow label="Add a task" onPress={() => router.push("/add-task")} />
-      </View>
-
-      {done.length > 0 ? (
-        <View style={{ marginTop: 24 }}>
-          <SectionLabel>Completed</SectionLabel>
-          <View style={{ gap: 8 }}>
-            {done.map((t) => (
-              <TaskRow key={t.id} task={t} variant="done" goalTitle={goalTitle(t.goalId)} />
-            ))}
-          </View>
-        </View>
-      ) : null}
-    </Screen>
+        }
+      />
+    </View>
   );
 }
