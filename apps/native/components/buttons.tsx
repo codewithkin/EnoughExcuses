@@ -1,7 +1,7 @@
 import * as Haptics from "expo-haptics";
-import { Pressable, Text } from "react-native";
+import { Pressable, Text, View } from "react-native";
 
-import { ACCENT, ACCENT_MUTED, INK } from "@/lib/theme";
+import { COLORS, FONTS, RADIUS } from "@/lib/theme";
 
 type Props = {
   label: string;
@@ -19,12 +19,34 @@ export function PrimaryButton({ label, onPress, disabled, haptic = true }: Props
         onPress();
       }}
       style={({ pressed }) => ({
-        backgroundColor: disabled ? ACCENT_MUTED : ACCENT,
-        opacity: pressed ? 0.85 : 1,
+        backgroundColor: disabled ? "#3A2418" : COLORS.coral,
+        borderRadius: RADIUS.pill,
+        opacity: pressed ? 0.9 : 1,
+        overflow: "hidden",
       })}
-      className="items-center rounded-2xl px-6 py-4"
     >
-      <Text style={{ color: INK }} className="text-base font-semibold">
+      {!disabled ? (
+        <View
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            height: "55%",
+            backgroundColor: COLORS.coralBright,
+            opacity: 0.45,
+          }}
+        />
+      ) : null}
+      <Text
+        style={{
+          color: disabled ? "#7A5238" : COLORS.ink,
+          fontFamily: FONTS.sansSemibold,
+          fontSize: 16,
+          textAlign: "center",
+          paddingVertical: 16,
+        }}
+      >
         {label}
       </Text>
     </Pressable>
@@ -39,10 +61,24 @@ export function GhostButton({ label, onPress, disabled, haptic = false }: Props)
         if (haptic) Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
         onPress();
       }}
-      style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
-      className="items-center rounded-2xl border border-neutral-700 px-6 py-4"
+      style={({ pressed }) => ({
+        borderRadius: RADIUS.pill,
+        borderWidth: 1,
+        borderColor: COLORS.line,
+        opacity: pressed ? 0.6 : 1,
+      })}
     >
-      <Text className="text-base font-medium text-muted">{label}</Text>
+      <Text
+        style={{
+          color: COLORS.subtle,
+          fontFamily: FONTS.sansMedium,
+          fontSize: 16,
+          textAlign: "center",
+          paddingVertical: 16,
+        }}
+      >
+        {label}
+      </Text>
     </Pressable>
   );
 }
