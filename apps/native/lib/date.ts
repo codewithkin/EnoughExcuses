@@ -35,3 +35,22 @@ export function formatClock(totalSeconds: number): string {
 export function newId(): string {
   return `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 8)}`;
 }
+
+const MONTHS = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+
+export function formatDateLabel(d: Date = new Date()): string {
+  return `${MONTHS[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
+}
+
+export function enumerateDays(fromKey: string, toKey: string): string[] {
+  const out: string[] = [];
+  const d = new Date(`${fromKey}T00:00:00`);
+  const end = new Date(`${toKey}T00:00:00`);
+  let guard = 0;
+  while (d <= end && guard < 1000) {
+    out.push(dayKey(d));
+    d.setDate(d.getDate() + 1);
+    guard += 1;
+  }
+  return out;
+}
