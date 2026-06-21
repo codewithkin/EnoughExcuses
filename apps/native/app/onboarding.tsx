@@ -4,6 +4,7 @@ import { Image, Pressable, ScrollView, TextInput, View } from "react-native";
 import Animated, { FadeIn, FadeInDown } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { AvatarStack } from "@/components/avatar-stack";
 import { PrimaryButton } from "@/components/buttons";
 import { FadeToInk } from "@/components/gradient";
 import { Hint } from "@/components/hint";
@@ -60,7 +61,10 @@ export default function Onboarding() {
             </View>
 
             <View style={{ flex: 1, justifyContent: "flex-end", paddingBottom: 8 }}>
-              <Label style={{ marginBottom: 12 }}>12,000 people show up daily</Label>
+              <View style={{ flexDirection: "row", alignItems: "center", gap: 10, marginBottom: 14 }}>
+                <AvatarStack />
+                <Label>12,000 people show up daily</Label>
+              </View>
             <Display>Stop planning.{"\n"}Start executing.</Display>
             <Body color={COLORS.subtle} style={{ marginTop: 16 }}>
               One task. A timer runs. You hit Done or Skip. That&apos;s the whole app.
