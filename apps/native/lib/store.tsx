@@ -21,6 +21,9 @@ type AppContextType = {
   skipTask: (id: string) => void;
   completeOnboarding: (goalTitle: string, taskTitle: string, durationMin: number) => void;
   hideHintForever: (id: string) => void;
+  editTask: (id: string, patch: { title?: string; durationMin?: number }) => void;
+  extendSession: (minutes: number) => void;
+  setPrimaryGoal: (id: string) => void;
 };
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -83,20 +86,26 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const addGoal = useCallback((title: string): Goal => {
     const goal: Goal = { id: newId(), title: title.trim(), createdAt: new Date().toISOString() };
-    setState((s) => ({ ...s, goals: [...s.goals, goal] }));
+    setState((s) => ({
+      ...s,
+      goals: [...s.goals, goal],
+      primaryGoalId: s.primaryGoalId ?? goal.id,
+    }));
     return goal;
   }, []);
 
   const addTask = useCallback((input: AddTaskInput) => {
-    const task: Task = {
-      id: newId(),
-      goalId: input.goalId ?? null,
-      title: input.title.trim(),
-      durationMin: input.durationMin,
-      status: "pending",
-      createdAt: new Date().toISOString(),
-    };
-    setState((s) => ({ ...s, tasks: [...s.tasks, task] }));
+    setState((s) => {
+      const task: Task = {
+        id: newId(),
+        goalId: input.goalId ?? s.primaryGoalId ?? null,
+        title: input.title.trim(),
+        durationMin: input.durationMin,
+        status: "pending",
+        createdAt: new Date().toISOString(),
+      };
+      return { ...s, tasks: [...s.tasks, task] };
+    });
   }, []);
 
   const removeTask = useCallback((id: string) => {
@@ -208,11 +217,52 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
           status: "pending",
           createdAt: new Date().toISOString(),
         };
-        return { ...s, onboarded: true, goals: [goal], tasks: [task] };
+        return {
+          ...s,
+          onboarded: true,
+          goals: [goal],
+          tasks: [task],
+          primaryGoalId: goal.id,
+        };
       });
     },
     [],
   );
+
+  const editTask = useCallback((id: string, patch: { title?: string; durationMin?: number }) => {
+    setState((s) => {
+      const tasks = s.tasks.map((t) =>
+        t.id === id
+          ? {
+              ...t,
+              ...(patch.title !== undefined ? { title: patch.title.trim() } : {}),
+              ...(patch.durationMin !== undefined ? { durationMin: patch.durationMin } : {}),
+            }
+          : t,
+      );
+      let session = s.session;
+      if (patch.durationMin !== undefined && s.session && s.session.taskId === id) {
+        session = {
+          ...s.session,
+          durationSec: patch.durationMin * 60,
+          startedAt: new Date().toISOString(),
+        };
+      }
+      return { ...s, tasks, session };
+    });
+  }, []);
+
+  const extendSession = useCallback((minutes: number) => {
+    setState((s) =>
+      s.session
+        ? { ...s, session: { ...s.session, durationSec: s.session.durationSec + minutes * 60 } }
+        : s,
+    );
+  }, []);
+
+  const setPrimaryGoal = useCallback((id: string) => {
+    setState((s) => ({ ...s, primaryGoalId: id }));
+  }, []);
 
   const hideHintForever = useCallback((id: string) => {
     setState((s) =>
@@ -228,6 +278,24 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   );
   const queue = useMemo(() => state.tasks.filter((t) => t.status === "pending"), [state.tasks]);
   const today = useMemo(() => computeToday(state.tasks), [state.tasks]);
+
+  // Keep a single focus session aligned with the current task.
+  useEffect(() => {
+    if (!ready) return;
+    setState((s) => {
+      const cur = s.tasks.find((t) => t.status === "pending") ?? null;
+      if (!cur) return s.session ? { ...s, session: null } : s;
+      if (s.session && s.session.taskId === cur.id) return s;
+      return {
+        ...s,
+        session: {
+          taskId: cur.id,
+          startedAt: new Date().toISOString(),
+          durationSec: cur.durationMin * 60,
+        },
+      };
+    });
+  }, [currentTask?.id, ready]);
 
   const value = useMemo(
     () => ({
@@ -245,6 +313,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       skipTask,
       completeOnboarding,
       hideHintForever,
+      editTask,
+      extendSession,
+      setPrimaryGoal,
     }),
     [
       ready,
@@ -261,6 +332,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       skipTask,
       completeOnboarding,
       hideHintForever,
+      editTask,
+      extendSession,
+      setPrimaryGoal,
     ],
   );
 
