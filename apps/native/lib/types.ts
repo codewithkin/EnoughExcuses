@@ -39,6 +39,8 @@ export type FocusSession = {
   durationSec: number;
 };
 
+export type TimerStyle = "ring" | "numerals" | "ambient";
+
 export type PersistedState = {
   onboarded: boolean;
   goals: Goal[];
@@ -48,6 +50,7 @@ export type PersistedState = {
   dismissedHints: string[];
   primaryGoalId: string | null;
   session: FocusSession | null;
+  timerStyle: TimerStyle;
 };
 
 export const emptyState: PersistedState = {
@@ -65,4 +68,5 @@ export const emptyState: PersistedState = {
   dismissedHints: [],
   primaryGoalId: null,
   session: null,
+  timerStyle: "ring",
 };

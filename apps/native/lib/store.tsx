@@ -2,7 +2,13 @@ import React, { createContext, useCallback, useContext, useEffect, useMemo, useS
 
 import { dayKey, isToday, isYesterday, newId } from "./date";
 import { loadState, saveState } from "./storage";
-import { type DayRecord, type Goal, type PersistedState, type Task } from "./types";
+import {
+  type DayRecord,
+  type Goal,
+  type PersistedState,
+  type Task,
+  type TimerStyle,
+} from "./types";
 
 type AddTaskInput = { title: string; durationMin: number; goalId?: string | null };
 
@@ -24,6 +30,7 @@ type AppContextType = {
   editTask: (id: string, patch: { title?: string; durationMin?: number }) => void;
   extendSession: (minutes: number) => void;
   setPrimaryGoal: (id: string) => void;
+  setTimerStyle: (style: TimerStyle) => void;
 };
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -66,6 +73,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     dismissedHints: [],
     primaryGoalId: null,
     session: null,
+    timerStyle: "ring",
   }));
 
   useEffect(() => {
@@ -264,6 +272,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setState((s) => ({ ...s, primaryGoalId: id }));
   }, []);
 
+  const setTimerStyle = useCallback((style: TimerStyle) => {
+    setState((s) => ({ ...s, timerStyle: style }));
+  }, []);
+
   const hideHintForever = useCallback((id: string) => {
     setState((s) =>
       s.dismissedHints.includes(id)
@@ -316,6 +328,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       editTask,
       extendSession,
       setPrimaryGoal,
+      setTimerStyle,
     }),
     [
       ready,
@@ -335,6 +348,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       editTask,
       extendSession,
       setPrimaryGoal,
+      setTimerStyle,
     ],
   );
 

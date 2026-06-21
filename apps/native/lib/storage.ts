@@ -19,6 +19,7 @@ export async function loadState(): Promise<PersistedState> {
       dismissedHints: parsed.dismissedHints ?? [],
       primaryGoalId: parsed.primaryGoalId ?? null,
       session: parsed.session ?? null,
+      timerStyle: parsed.timerStyle ?? "ring",
     };
   } catch {
     return emptyState;
