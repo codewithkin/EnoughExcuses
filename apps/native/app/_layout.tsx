@@ -1,19 +1,5 @@
 import "@/global.css";
-import {
-  HankenGrotesk_400Regular,
-  HankenGrotesk_500Medium,
-  HankenGrotesk_600SemiBold,
-  HankenGrotesk_700Bold,
-} from "@expo-google-fonts/hanken-grotesk";
-import {
-  JetBrainsMono_400Regular,
-  JetBrainsMono_500Medium,
-} from "@expo-google-fonts/jetbrains-mono";
-import {
-  Newsreader_500Medium,
-  Newsreader_600SemiBold,
-  useFonts,
-} from "@expo-google-fonts/newsreader";
+import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { HeroUINativeProvider } from "heroui-native";
@@ -36,14 +22,14 @@ export const unstable_settings = {
 
 export default function Layout() {
   const [fontsLoaded] = useFonts({
-    Newsreader_500Medium,
-    Newsreader_600SemiBold,
-    HankenGrotesk_400Regular,
-    HankenGrotesk_500Medium,
-    HankenGrotesk_600SemiBold,
-    HankenGrotesk_700Bold,
-    JetBrainsMono_400Regular,
-    JetBrainsMono_500Medium,
+    Newsreader_500Medium: require("../assets/fonts/Newsreader-Medium.ttf"),
+    Newsreader_600SemiBold: require("../assets/fonts/Newsreader-SemiBold.ttf"),
+    HankenGrotesk_400Regular: require("../assets/fonts/HankenGrotesk-Regular.ttf"),
+    HankenGrotesk_500Medium: require("../assets/fonts/HankenGrotesk-Medium.ttf"),
+    HankenGrotesk_600SemiBold: require("../assets/fonts/HankenGrotesk-SemiBold.ttf"),
+    HankenGrotesk_700Bold: require("../assets/fonts/HankenGrotesk-Bold.ttf"),
+    JetBrainsMono_400Regular: require("../assets/fonts/JetBrainsMono-Regular.ttf"),
+    JetBrainsMono_500Medium: require("../assets/fonts/JetBrainsMono-Medium.ttf"),
   });
 
   useEffect(() => {
