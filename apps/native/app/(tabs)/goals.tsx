@@ -1,5 +1,7 @@
+import { Ionicons } from "@expo/vector-icons";
+import * as Haptics from "expo-haptics";
 import { useRouter } from "expo-router";
-import { View } from "react-native";
+import { Pressable, View } from "react-native";
 
 import { Hint } from "@/components/hint";
 import { AddRow, AnimatedRow, Card, ProgressBar, SectionLabel } from "@/components/primitives";
@@ -12,9 +14,9 @@ import { COLORS } from "@/lib/theme";
 
 export default function Goals() {
   const router = useRouter();
-  const { state } = useApp();
+  const { state, setPrimaryGoal } = useApp();
   const goals = state.goals;
-  const primary = goals[0];
+  const primary = goals.find((g) => g.id === state.primaryGoalId) ?? goals[0];
   const primaryStats = primary ? goalStats(state.tasks, primary.id) : null;
 
   return (
@@ -55,14 +57,28 @@ export default function Goals() {
           <View style={{ gap: 10, marginBottom: 8 }}>
             {goals.map((g, i) => {
               const s = goalStats(state.tasks, g.id);
+              const isPrimary = g.id === primary?.id;
               return (
                 <AnimatedRow key={g.id} index={i}>
                   <Card>
-                    <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 10 }}>
-                      <BodyStrong style={{ fontSize: 15 }}>{g.title}</BodyStrong>
+                    <View style={{ flexDirection: "row", alignItems: "center", gap: 10, marginBottom: 10 }}>
+                      <BodyStrong style={{ flex: 1, fontSize: 15 }}>{g.title}</BodyStrong>
                       <Caption style={{ fontFamily: "JetBrainsMono_500Medium" }}>
                         {s.done}/{s.total}
                       </Caption>
+                      <Pressable
+                        onPress={() => {
+                          Haptics.selectionAsync();
+                          setPrimaryGoal(g.id);
+                        }}
+                        hitSlop={8}
+                      >
+                        <Ionicons
+                          name={isPrimary ? "star" : "star-outline"}
+                          size={18}
+                          color={isPrimary ? COLORS.coral : COLORS.subtle}
+                        />
+                      </Pressable>
                     </View>
                     <ProgressBar value={s.done} total={s.total} />
                   </Card>
