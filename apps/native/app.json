@@ -26,6 +26,14 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "android": {
+      "package": "com.codewithkin.lockedin"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "926ecf70-70ed-473c-8d3a-8bce7e63a955"
+      }
     }
   }
 }
