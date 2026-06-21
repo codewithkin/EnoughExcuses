@@ -10,7 +10,9 @@ import { PrimaryButton } from "@/components/buttons";
 import { FadeToInk } from "@/components/gradient";
 import { ImageWithFallback } from "@/components/image-with-fallback";
 import { PlanOption } from "@/components/plan-option";
+import { useToast } from "@/components/toast";
 import { BodyMuted, Caption, Display, Label } from "@/components/typography";
+import { usePurchases } from "@/lib/purchases";
 import { useApp } from "@/lib/store";
 import { COLORS, FONTS } from "@/lib/theme";
 
@@ -23,8 +25,27 @@ type Plan = "monthly" | "annual";
 export default function Paywall() {
   const router = useRouter();
   const { state } = useApp();
+  const { restore } = usePurchases();
+  const { show } = useToast();
   const streak = state.stats.streak;
   const [plan, setPlan] = useState<Plan>("annual");
+  const [restoring, setRestoring] = useState(false);
+
+  async function onRestore() {
+    if (restoring) return;
+    setRestoring(true);
+    try {
+      const ok = await restore();
+      if (ok) {
+        show("Purchases restored. Welcome back to Pro.", "info");
+        router.back();
+      } else {
+        show("No purchases found to restore.", "error");
+      }
+    } finally {
+      setRestoring(false);
+    }
+  }
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.ink }} edges={["top", "bottom"]}>
@@ -100,6 +121,16 @@ export default function Paywall() {
           <Caption style={{ marginTop: 14, textAlign: "center", fontFamily: FONTS.mono }}>
             No payment now. Cancel anytime.
           </Caption>
+          <Pressable
+            onPress={onRestore}
+            disabled={restoring}
+            hitSlop={10}
+            style={{ marginTop: 12, alignSelf: "center", paddingVertical: 4 }}
+          >
+            <Caption style={{ color: COLORS.subtle }}>
+              {restoring ? "Restoring…" : "Restore purchases"}
+            </Caption>
+          </Pressable>
         </Animated.View>
       </View>
     </SafeAreaView>
