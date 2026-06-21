@@ -14,14 +14,17 @@ import { AddRow, SectionLabel } from "@/components/primitives";
 import { ScreenHeader } from "@/components/screen";
 import { BodyMuted, Label } from "@/components/typography";
 import { TaskRow } from "@/components/task-row";
+import { formatClock } from "@/lib/date";
 import { completedToday } from "@/lib/selectors";
 import { useApp } from "@/lib/store";
+import { useCountdown } from "@/lib/use-countdown";
 import { COLORS } from "@/lib/theme";
 import { type Task } from "@/lib/types";
 
 export default function Tasks() {
   const router = useRouter();
   const { state, currentTask, queue, removeTask, reorderQueue } = useApp();
+  const countdown = useCountdown();
 
   const upNext = queue.filter((t) => t.id !== currentTask?.id);
   const done = completedToday(state.tasks);
@@ -50,6 +53,7 @@ export default function Tasks() {
             index={index}
             goalTitle={goalTitle(item.goalId)}
             onRemove={() => removeTask(item.id)}
+            onEdit={() => router.push({ pathname: "/edit-task", params: { id: item.id } })}
           />
         )}
         ListHeaderComponent={
@@ -74,7 +78,12 @@ export default function Tasks() {
               <View style={{ marginTop: 20, marginBottom: 4 }}>
                 <SectionLabel>In progress</SectionLabel>
                 <Pressable onPress={() => router.push("/focus")}>
-                  <TaskRow task={currentTask} variant="running" goalTitle={goalTitle(currentTask.goalId)} />
+                  <TaskRow
+                    task={currentTask}
+                    variant="running"
+                    timer={countdown.active ? formatClock(countdown.remaining) : undefined}
+                    goalTitle={goalTitle(currentTask.goalId)}
+                  />
                 </Pressable>
               </View>
             ) : null}
@@ -115,17 +124,19 @@ function DraggableTaskRow({
   index,
   goalTitle,
   onRemove,
+  onEdit,
 }: {
   task: Task;
   index: number;
   goalTitle?: string;
   onRemove: () => void;
+  onEdit: () => void;
 }) {
   const drag = useReorderableDrag();
   const isActive = useIsActive();
 
   return (
-    <View style={{ marginBottom: 8 }}>
+    <Pressable onPress={onEdit} style={{ marginBottom: 8 }}>
       <TaskRow
         task={task}
         index={index}
@@ -138,6 +149,6 @@ function DraggableTaskRow({
           </Pressable>
         }
       />
-    </View>
+    </Pressable>
   );
 }
