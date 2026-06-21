@@ -6,8 +6,9 @@
     "web": {
       "bundler": "metro"
     },
-    "name": "lockedin",
+    "name": "LockedIn",
     "slug": "lockedin",
+    "icon": "./assets/images/icon.png",
     "plugins": [
       "expo-font",
       [
@@ -28,7 +29,11 @@
       "reactCompiler": true
     },
     "android": {
-      "package": "com.codewithkin.lockedin"
+      "package": "com.codewithkin.lockedin",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "backgroundColor": "#000000"
+      }
     },
     "extra": {
       "eas": {
