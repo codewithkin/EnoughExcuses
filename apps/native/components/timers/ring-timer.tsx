@@ -86,7 +86,7 @@ export function RingTimer({
             </Display>
           </View>
         </View>
-        <Caption style={{ marginTop: 18 }}>of {formatClock(total)} block</Caption>
+        <Caption style={{ marginTop: 18 }}>of {formatClock(total)} focus</Caption>
       </View>
 
       <Animated.View entering={FadeIn} style={{ marginBottom: 16 }}>

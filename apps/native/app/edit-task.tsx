@@ -61,7 +61,7 @@ export default function EditTask() {
             marginBottom: 10,
           }}
         >
-          <SectionLabel style={{ marginBottom: 0 }}>Block length</SectionLabel>
+          <SectionLabel style={{ marginBottom: 0 }}>Focus time</SectionLabel>
           <Caption style={{ fontFamily: FONTS.monoMedium }}>{duration} min</Caption>
         </View>
         <DurationPicker value={duration} onChange={setDuration} />

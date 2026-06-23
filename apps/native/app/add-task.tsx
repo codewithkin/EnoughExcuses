@@ -51,12 +51,12 @@ export default function AddTask() {
         </View>
 
         <View style={{ marginTop: 24 }}>
-          <SectionLabel>Block length</SectionLabel>
+          <SectionLabel>Focus time</SectionLabel>
           <DurationPicker value={duration} onChange={setDuration} />
         </View>
 
         <View style={{ flex: 1 }} />
-        <PrimaryButton label="Add to queue" onPress={submit} disabled={title.trim().length === 0} />
+        <PrimaryButton label="Add task" onPress={submit} disabled={title.trim().length === 0} />
       </View>
     </ModalScreen>
   );

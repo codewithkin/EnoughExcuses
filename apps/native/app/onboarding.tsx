@@ -160,7 +160,7 @@ export default function Onboarding() {
               </Hint>
             </View>
 
-            <Label style={{ marginTop: 24, marginBottom: 10 }}>Block length</Label>
+            <Label style={{ marginTop: 24, marginBottom: 10 }}>Focus time</Label>
             <View style={{ flexDirection: "row", gap: 8 }}>
               {DURATIONS.map((d) => (
                 <Pressable key={d} onPress={() => setDuration(d)} style={durationChip(d === duration)}>

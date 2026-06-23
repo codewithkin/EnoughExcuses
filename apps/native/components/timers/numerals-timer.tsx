@@ -59,7 +59,7 @@ export function NumeralsTimer({
         </View>
 
         <Label style={{ marginTop: 16, color: COLORS.subtle, letterSpacing: 1.5 }}>
-          {blockMin} min block · {formatClock(elapsed)} in
+          {blockMin} min focus · {formatClock(elapsed)} in
         </Label>
       </View>
 
