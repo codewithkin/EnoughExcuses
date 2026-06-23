@@ -1,6 +1,7 @@
 import * as Haptics from "expo-haptics";
-import { Pressable, Text, View } from "react-native";
+import { Text, View } from "react-native";
 
+import { PressableScale } from "@/components/pressable-scale";
 import { COLORS, FONTS, RADIUS } from "@/lib/theme";
 
 type Props = {
@@ -12,18 +13,17 @@ type Props = {
 
 export function PrimaryButton({ label, onPress, disabled, haptic = true }: Props) {
   return (
-    <Pressable
+    <PressableScale
       disabled={disabled}
       onPress={() => {
         if (haptic) Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
         onPress();
       }}
-      style={({ pressed }) => ({
+      style={{
         backgroundColor: disabled ? "#3A2418" : COLORS.coral,
         borderRadius: RADIUS.pill,
-        opacity: pressed ? 0.9 : 1,
         overflow: "hidden",
-      })}
+      }}
     >
       {!disabled ? (
         <View
@@ -49,24 +49,24 @@ export function PrimaryButton({ label, onPress, disabled, haptic = true }: Props
       >
         {label}
       </Text>
-    </Pressable>
+    </PressableScale>
   );
 }
 
 export function GhostButton({ label, onPress, disabled, haptic = false }: Props) {
   return (
-    <Pressable
+    <PressableScale
       disabled={disabled}
+      scaleTo={0.97}
       onPress={() => {
         if (haptic) Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
         onPress();
       }}
-      style={({ pressed }) => ({
+      style={{
         borderRadius: RADIUS.pill,
         borderWidth: 1,
         borderColor: COLORS.line,
-        opacity: pressed ? 0.6 : 1,
-      })}
+      }}
     >
       <Text
         style={{
@@ -79,6 +79,6 @@ export function GhostButton({ label, onPress, disabled, haptic = false }: Props)
       >
         {label}
       </Text>
-    </Pressable>
+    </PressableScale>
   );
 }
