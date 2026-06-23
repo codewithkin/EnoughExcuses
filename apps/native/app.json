@@ -22,6 +22,12 @@
             "backgroundColor": "#151517"
           }
         }
+      ],
+      [
+        "expo-notifications",
+        {
+          "color": "#FF6B4A"
+        }
       ]
     ],
     "experiments": {

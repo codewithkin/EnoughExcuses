@@ -10,6 +10,7 @@ import { KeyboardProvider } from "react-native-keyboard-controller";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Uniwind } from "uniwind";
 
+import { NotificationsProvider } from "@/components/notifications-provider";
 import { ToastProvider } from "@/components/toast";
 import { AppThemeProvider } from "@/contexts/app-theme-context";
 import { PurchasesProvider } from "@/lib/purchases";
@@ -47,8 +48,9 @@ export default function Layout() {
           <AppThemeProvider>
             <HeroUINativeProvider>
               <AppProvider>
-                <PurchasesProvider>
-                  <ToastProvider>
+                <NotificationsProvider>
+                  <PurchasesProvider>
+                    <ToastProvider>
                     <StatusBar style="light" />
                     <Stack
                       screenOptions={{
@@ -73,8 +75,9 @@ export default function Layout() {
                         options={{ presentation: "fullScreenModal", gestureEnabled: false }}
                       />
                     </Stack>
-                  </ToastProvider>
-                </PurchasesProvider>
+                    </ToastProvider>
+                  </PurchasesProvider>
+                </NotificationsProvider>
               </AppProvider>
             </HeroUINativeProvider>
           </AppThemeProvider>
