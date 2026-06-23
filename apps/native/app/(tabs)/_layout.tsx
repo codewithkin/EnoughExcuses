@@ -1,6 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 
+import { PaywallGate } from "@/components/paywall-gate";
 import { COLORS } from "@/lib/theme";
 
 export const unstable_settings = {
@@ -9,7 +10,8 @@ export const unstable_settings = {
 
 export default function TabsLayout() {
   return (
-    <Tabs
+    <PaywallGate>
+      <Tabs
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: COLORS.coral,
@@ -56,6 +58,7 @@ export default function TabsLayout() {
           tabBarIcon: ({ color, size }) => <Ionicons name="flame" size={size} color={color} />,
         }}
       />
-    </Tabs>
+      </Tabs>
+    </PaywallGate>
   );
 }

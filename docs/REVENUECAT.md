@@ -106,6 +106,27 @@ There's also `presentPaywallIfNeeded({ requiredEntitlementIdentifier: "LockedIn 
 
 ---
 
+## 5b. Hard paywall gate + 2-day free trial
+
+The app is **gated**: `components/paywall-gate.tsx` wraps the tabbed app (`app/(tabs)/_layout.tsx`). The flow:
+
+1. **Onboarding finishes** → the user lands in the tabs → the gate runs.
+2. **Not entitled** → the gate renders the full-screen RevenueCat paywall (`<RevenueCatUI.Paywall>`) with **no dismiss** — the only way forward is the paywall's CTA.
+3. **They start the 2-day free trial** (or subscribe) → RevenueCat grants the **`LockedIn Pro`** entitlement → `isPro` flips true via the customer-info listener → the gate renders the app.
+4. **Trial ends without converting** → the entitlement lapses → `isPro` flips false → the gate shows the paywall again, **unskippable**, until they subscribe.
+
+All of this is **entitlement-driven** — there's no timer in our code counting the 2 days. The "2 days then hard lock" behaviour comes entirely from configuring a **free trial (introductory offer)** on the subscription products:
+
+- In **Google Play Console**, add a **free trial** offer (2 days) to the `monthly` and `yearly` base plans.
+- In **RevenueCat**, make sure those products are attached to the `LockedIn Pro` entitlement and included in the `default` offering's packages.
+- Design the paywall (RevenueCat **Paywalls**) so its primary button reads **"Start 2-day free trial"** and, ideally, **without a close button** (it's a hard gate).
+
+During the trial the entitlement is active, so the app is fully usable; when it expires the entitlement disappears and the gate re-locks — automatically.
+
+**Safety valve:** the gate **fails open** if there's no offering to present (`paywallAvailable === false`) — e.g. a dev build with nothing configured, or a launch-time network failure. This prevents the app from bricking itself behind a paywall it can't show. Once your `default` offering + paywall are live, the gate is hard. If you want it to fail *closed* instead, remove the `|| !paywallAvailable` check in `paywall-gate.tsx`.
+
+---
+
 ## 6. Customer Center
 
 ```ts
