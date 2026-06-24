@@ -69,9 +69,14 @@ export default function GoalDetail() {
         <Pressable onPress={() => router.back()} hitSlop={10}>
           <Ionicons name="chevron-back" size={24} color={COLORS.fg} />
         </Pressable>
-        <Pressable onPress={deleteGoal} hitSlop={10}>
-          <Ionicons name="trash-outline" size={20} color={COLORS.subtle} />
-        </Pressable>
+        <View style={{ flexDirection: "row", gap: 16 }}>
+          <Pressable onPress={() => router.push(`/share?type=goal&goalId=${goal.id}`)} hitSlop={10}>
+            <Ionicons name="share-outline" size={20} color={COLORS.subtle} />
+          </Pressable>
+          <Pressable onPress={deleteGoal} hitSlop={10}>
+            <Ionicons name="trash-outline" size={20} color={COLORS.subtle} />
+          </Pressable>
+        </View>
       </View>
 
       <ScrollView contentContainerStyle={{ padding: 24, paddingTop: 8, paddingBottom: 48 }}>

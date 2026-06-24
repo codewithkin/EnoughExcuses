@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { View } from "react-native";
+import { Pressable, View } from "react-native";
 import Animated, { FadeIn, FadeInDown, ZoomIn } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -76,8 +76,14 @@ export default function FirstWin() {
         ) : null}
       </View>
 
-      <View style={{ paddingHorizontal: 28, paddingBottom: 28 }}>
+      <View style={{ paddingHorizontal: 28, paddingBottom: 28, gap: 6 }}>
         <PrimaryButton label="Continue" onPress={() => router.back()} />
+        <Pressable
+          onPress={() => router.push("/share?type=task")}
+          style={{ alignItems: "center", paddingVertical: 12 }}
+        >
+          <BodyMuted style={{ fontSize: 15 }}>Share this win</BodyMuted>
+        </Pressable>
       </View>
     </SafeAreaView>
   );

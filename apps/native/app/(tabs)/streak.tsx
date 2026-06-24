@@ -55,9 +55,14 @@ export default function Streak() {
       <ScreenHeader
         title="Streak"
         right={
-          <Pressable onPress={() => router.push("/settings")} hitSlop={10} style={{ marginTop: 6 }}>
-            <Ionicons name="settings-outline" size={22} color={COLORS.subtle} />
-          </Pressable>
+          <View style={{ flexDirection: "row", gap: 16, marginTop: 6 }}>
+            <Pressable onPress={() => router.push("/share?type=streak")} hitSlop={10}>
+              <Ionicons name="share-outline" size={22} color={COLORS.subtle} />
+            </Pressable>
+            <Pressable onPress={() => router.push("/settings")} hitSlop={10}>
+              <Ionicons name="settings-outline" size={22} color={COLORS.subtle} />
+            </Pressable>
+          </View>
         }
       />
 

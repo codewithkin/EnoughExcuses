@@ -64,13 +64,12 @@ export default function Layout() {
                     >
                       <Stack.Screen name="index" />
                       <Stack.Screen name="onboarding" options={{ animation: "fade" }} />
-                      <Stack.Screen name="(tabs)" options={{ animation: "fade" }} />
+                      <Stack.Screen name="(drawer)" options={{ animation: "fade" }} />
                       <Stack.Screen name="add-task" options={{ presentation: "modal" }} />
                       <Stack.Screen name="add-goal" options={{ presentation: "modal" }} />
                       <Stack.Screen name="edit-task" options={{ presentation: "modal" }} />
                       <Stack.Screen name="share" options={{ presentation: "modal" }} />
                       <Stack.Screen name="day-summary" options={{ presentation: "modal" }} />
-                      <Stack.Screen name="settings" options={{ presentation: "modal" }} />
                       <Stack.Screen
                         name="paywall"
                         options={{ presentation: "fullScreenModal", gestureEnabled: false }}

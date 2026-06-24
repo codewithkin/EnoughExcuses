@@ -235,6 +235,7 @@ function NextUpConfirm({
   onStart: () => void;
   onPickAnother: () => void;
 }) {
+  const router = useRouter();
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.ink }}>
       <View style={{ flex: 1, justifyContent: "center", paddingHorizontal: 28 }}>
@@ -255,6 +256,12 @@ function NextUpConfirm({
           <PrimaryButton label="Start this" onPress={onStart} />
           <Pressable onPress={onPickAnother} style={{ alignItems: "center", paddingVertical: 12 }}>
             <BodyMuted style={{ fontSize: 15 }}>Pick another</BodyMuted>
+          </Pressable>
+          <Pressable
+            onPress={() => router.push("/share?type=task")}
+            style={{ alignItems: "center", paddingVertical: 4 }}
+          >
+            <Caption color={COLORS.coral}>Share that win</Caption>
           </Pressable>
         </View>
       </View>
