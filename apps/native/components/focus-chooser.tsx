@@ -4,7 +4,6 @@ import { Pressable, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { EmptyState } from "@/components/empty-state";
-import { MenuButton } from "@/components/menu-button";
 import { BodyMuted, BodyStrong, Caption, Display, Label } from "@/components/typography";
 import { pendingByGoal } from "@/lib/selectors";
 import { useApp } from "@/lib/store";
@@ -34,9 +33,6 @@ export function FocusChooser({ onPick }: { onPick: (taskId: string) => void }) {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.ink }}>
       <ScrollView contentContainerStyle={{ padding: 24, paddingBottom: 48 }} showsVerticalScrollIndicator={false}>
-        <View style={{ marginBottom: 14 }}>
-          <MenuButton />
-        </View>
         <Label>Focus</Label>
         <Display style={{ fontSize: 30, lineHeight: 34, marginTop: 8 }}>
           What are we locking in on?
