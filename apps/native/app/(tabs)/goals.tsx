@@ -66,28 +66,30 @@ export default function Goals() {
               const isPrimary = g.id === primary?.id;
               return (
                 <AnimatedRow key={g.id} index={i}>
-                  <Card>
-                    <View style={{ flexDirection: "row", alignItems: "center", gap: 10, marginBottom: 10 }}>
-                      <BodyStrong style={{ flex: 1, fontSize: 15 }}>{g.title}</BodyStrong>
-                      <Caption style={{ fontFamily: "JetBrainsMono_500Medium" }}>
-                        {s.done}/{s.total}
-                      </Caption>
-                      <Pressable
-                        onPress={() => {
-                          Haptics.selectionAsync();
-                          setPrimaryGoal(g.id);
-                        }}
-                        hitSlop={8}
-                      >
-                        <Ionicons
-                          name={isPrimary ? "star" : "star-outline"}
-                          size={18}
-                          color={isPrimary ? COLORS.coral : COLORS.subtle}
-                        />
-                      </Pressable>
-                    </View>
-                    <ProgressBar value={s.done} total={s.total} />
-                  </Card>
+                  <Pressable onPress={() => router.push(`/goal/${g.id}`)}>
+                    <Card>
+                      <View style={{ flexDirection: "row", alignItems: "center", gap: 10, marginBottom: 10 }}>
+                        <BodyStrong style={{ flex: 1, fontSize: 15 }}>{g.title}</BodyStrong>
+                        <Caption style={{ fontFamily: "JetBrainsMono_500Medium" }}>
+                          {s.done}/{s.total}
+                        </Caption>
+                        <Pressable
+                          onPress={() => {
+                            Haptics.selectionAsync();
+                            setPrimaryGoal(g.id);
+                          }}
+                          hitSlop={8}
+                        >
+                          <Ionicons
+                            name={isPrimary ? "star" : "star-outline"}
+                            size={18}
+                            color={isPrimary ? COLORS.coral : COLORS.subtle}
+                          />
+                        </Pressable>
+                      </View>
+                      <ProgressBar value={s.done} total={s.total} />
+                    </Card>
+                  </Pressable>
                 </AnimatedRow>
               );
             })}
