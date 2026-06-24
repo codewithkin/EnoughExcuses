@@ -1,72 +1,38 @@
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
-import { Link } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
 import { Drawer } from "expo-router/drawer";
-import { useThemeColor } from "heroui-native";
-import React, { useCallback } from "react";
-import { Pressable, Text } from "react-native";
 
-import { ThemeToggle } from "@/components/theme-toggle";
+import { COLORS } from "@/lib/theme";
 
-function DrawerLayout() {
-  const themeColorForeground = useThemeColor("foreground");
-  const themeColorBackground = useThemeColor("background");
-
-  const renderThemeToggle = useCallback(() => <ThemeToggle />, []);
-
+export default function DrawerLayout() {
   return (
     <Drawer
       screenOptions={{
-        headerTintColor: themeColorForeground,
-        headerStyle: { backgroundColor: themeColorBackground },
-        headerTitleStyle: {
-          fontWeight: "600",
-          color: themeColorForeground,
-        },
-        headerRight: renderThemeToggle,
-        drawerStyle: { backgroundColor: themeColorBackground },
+        headerShown: false,
+        drawerType: "front",
+        swipeEdgeWidth: 50,
+        drawerStyle: { backgroundColor: COLORS.ink, width: 280 },
+        drawerActiveTintColor: COLORS.coral,
+        drawerInactiveTintColor: COLORS.subtle,
+        drawerActiveBackgroundColor: "rgba(255,107,74,0.08)",
+        drawerLabelStyle: { fontFamily: "HankenGrotesk_600SemiBold", fontSize: 15 },
       }}
     >
       <Drawer.Screen
-        name="index"
+        name="(tabs)"
         options={{
-          headerTitle: "Home",
-          drawerLabel: ({ color, focused }) => (
-            <Text style={{ color: focused ? color : themeColorForeground }}>Home</Text>
-          ),
-          drawerIcon: ({ size, color, focused }) => (
-            <Ionicons
-              name="home-outline"
-              size={size}
-              color={focused ? color : themeColorForeground}
-            />
-          ),
+          drawerLabel: "Home",
+          drawerIcon: ({ color, size }) => <Ionicons name="flash-outline" size={size} color={color} />,
         }}
       />
       <Drawer.Screen
-        name="(tabs)"
+        name="settings"
         options={{
-          headerTitle: "Tabs",
-          drawerLabel: ({ color, focused }) => (
-            <Text style={{ color: focused ? color : themeColorForeground }}>Tabs</Text>
-          ),
-          drawerIcon: ({ size, color, focused }) => (
-            <MaterialIcons
-              name="border-bottom"
-              size={size}
-              color={focused ? color : themeColorForeground}
-            />
-          ),
-          headerRight: () => (
-            <Link href="/modal" asChild>
-              <Pressable className="mr-4">
-                <Ionicons name="add-outline" size={24} color={themeColorForeground} />
-              </Pressable>
-            </Link>
+          drawerLabel: "Settings",
+          drawerIcon: ({ color, size }) => (
+            <Ionicons name="settings-outline" size={size} color={color} />
           ),
         }}
       />
     </Drawer>
   );
 }
-
-export default DrawerLayout;
