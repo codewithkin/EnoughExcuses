@@ -87,7 +87,7 @@ export default function Onboarding() {
             entering={FadeInDown.duration(280)}
             style={{ flex: 1, justifyContent: "center", paddingVertical: 24 }}
           >
-            <Display style={{ fontSize: 34, lineHeight: 38 }}>What are you working toward?</Display>
+            <Display style={{ fontSize: 34, lineHeight: 38 }}>What are you locking in on?</Display>
             <BodyMuted style={{ marginTop: 12 }}>
               Tasks live under a goal. Start with one — add more later.
             </BodyMuted>
@@ -95,7 +95,7 @@ export default function Onboarding() {
             <TextInput
               value={goal}
               onChangeText={setGoal}
-              placeholder="Ship LockedIn v1"
+              placeholder="Post on social media everyday"
               placeholderTextColor={COLORS.subtle}
               autoCorrect={false}
               returnKeyType="next"
@@ -148,7 +148,7 @@ export default function Onboarding() {
             <TextInput
               value={task}
               onChangeText={setTask}
-              placeholder="Write the Q3 narrative"
+              placeholder="Edit the next video"
               placeholderTextColor={COLORS.subtle}
               autoCorrect={false}
               returnKeyType="done"

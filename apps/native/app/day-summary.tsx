@@ -21,7 +21,7 @@ export default function DaySummarySheet() {
         <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" }}>
           <View style={{ flex: 1 }}>
             <Title>Today&apos;s summary</Title>
-            <BodyMuted style={{ marginTop: 4 }}>That&apos;s the day. Here&apos;s your record.</BodyMuted>
+            <BodyMuted style={{ marginTop: 4 }}>That&apos;s a wrap. Here&apos;s how you did.</BodyMuted>
           </View>
           <Label style={{ marginTop: 6 }}>{formatDateLabel()}</Label>
         </View>

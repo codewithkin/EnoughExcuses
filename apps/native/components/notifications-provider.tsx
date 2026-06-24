@@ -19,7 +19,7 @@ export function NotificationsProvider({ children }: { children: React.ReactNode 
   const session = state.session;
   const prefs = state.notifications;
   const sessionKey = session
-    ? `${session.taskId}:${session.startedAt}:${session.durationSec}`
+    ? `${session.taskId}:${session.startedAt}:${session.durationSec}:${session.pausedAt}:${session.pausedAccumSec}`
     : "none";
 
   // Ask once (after onboarding).
@@ -38,12 +38,13 @@ export function NotificationsProvider({ children }: { children: React.ReactNode 
   // Timer-finished notification tracks the active focus session.
   useEffect(() => {
     if (!onboarded) return;
-    if (!session || !prefs.timerEnd) {
+    if (!session || !prefs.timerEnd || session.pausedAt) {
       cancelTimerEnd();
       return;
     }
-    const endMs = new Date(session.startedAt).getTime() + session.durationSec * 1000;
-    const seconds = Math.round((endMs - Date.now()) / 1000);
+    const elapsed =
+      (Date.now() - new Date(session.startedAt).getTime()) / 1000 - session.pausedAccumSec;
+    const seconds = Math.round(session.durationSec - elapsed);
     const task = state.tasks.find((t) => t.id === session.taskId);
     scheduleTimerEnd(seconds, task?.title ?? "Your task");
     // eslint-disable-next-line react-hooks/exhaustive-deps

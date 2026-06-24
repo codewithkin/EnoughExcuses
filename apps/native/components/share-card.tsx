@@ -47,7 +47,7 @@ export const ShareCard = forwardRef<View, Props>(function ShareCard(
       <Label>LockedIn</Label>
       <Display style={{ marginTop: 14, fontSize: 56, lineHeight: 58 }}>Day {streak}.</Display>
       <Caption style={{ marginTop: 8, fontSize: 14 }} color={COLORS.subtle}>
-        {streak <= 1 ? "Day one. The streak starts now." : `${streak} days locked in. No excuses.`}
+        {streak <= 1 ? "Day one. We're locked in." : `${streak} days locked in. Hell of a run.`}
       </Caption>
 
       <View style={{ flexDirection: "row", gap: 28, marginTop: 28 }}>

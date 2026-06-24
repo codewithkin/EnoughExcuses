@@ -54,7 +54,7 @@ export function DayTimeline() {
           compact
           icon="time-outline"
           title="Nothing logged yet"
-          message="Finish or skip a task and it shows up here as your record for the day."
+          message="Finish or skip a task and it lands here — your record for the day."
         />
       ) : (
         <View style={{ gap: 8 }}>

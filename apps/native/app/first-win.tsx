@@ -57,7 +57,7 @@ export default function FirstWin() {
           <Animated.View entering={FadeInDown.delay(120).duration(320)} style={{ alignItems: "center" }}>
             <Display style={{ marginTop: 20, fontSize: 52, lineHeight: 56 }}>Day {streak}.</Display>
             <BodyMuted style={{ marginTop: 6, textAlign: "center" }}>
-              {streak <= 1 ? "You showed up. The streak starts now." : "You showed up again. Keep it alive."}
+              {streak <= 1 ? "You showed up. Streak's officially live." : "Back at it — don't let it cook."}
             </BodyMuted>
           </Animated.View>
         </View>

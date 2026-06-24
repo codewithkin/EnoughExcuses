@@ -67,7 +67,7 @@ export default function ShareScreen() {
           </Animated.View>
           <Animated.View entering={FadeIn.delay(300)}>
             <BodyMuted style={{ marginTop: 16, textAlign: "center", fontSize: 14 }}>
-              Opens your phone&apos;s share sheet — post it anywhere.
+              Drops straight to your share sheet — post it wherever.
             </BodyMuted>
           </Animated.View>
         </View>

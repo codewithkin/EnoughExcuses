@@ -98,7 +98,7 @@ export default function Streak() {
             {isPro ? "LockedIn Pro" : "Unlock history, templates & sync"}
           </BodyStrong>
           <Caption style={{ marginTop: 2 }}>
-            {isPro ? "Active · tap to manage your subscription" : "Keep your streak going with Pro"}
+            {isPro ? "Active · tap to manage your subscription" : "Go Pro, stay locked in"}
           </Caption>
         </View>
         <Ionicons name="chevron-forward" size={18} color={COLORS.subtle} />
@@ -111,7 +111,7 @@ export default function Streak() {
             compact
             icon="flame-outline"
             title="No streak yet"
-            message="Finish one task today and your streak starts. Miss a day and it resets."
+            message="Knock out one task today and it kicks off. Skip a day and it's cooked."
           />
         ) : (
           <View style={{ gap: 8 }}>

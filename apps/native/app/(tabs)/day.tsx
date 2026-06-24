@@ -16,7 +16,7 @@ export default function Day() {
     <Screen>
       <ScreenHeader
         title="Today's summary"
-        subtitle="An honest mirror of the day."
+        subtitle="No sugarcoating — here's how today went."
         right={<Label style={{ marginTop: 8 }}>{formatDateLabel()}</Label>}
       />
 
@@ -45,7 +45,7 @@ export default function Day() {
       </Pressable>
 
       <View style={{ marginTop: 18 }}>
-        <Hint id="day.share">Tap Share to turn today into a clean image for your story.</Hint>
+        <Hint id="day.share">Hit Share to turn today into a clean card for your story.</Hint>
       </View>
 
       <View style={{ marginTop: 24 }}>

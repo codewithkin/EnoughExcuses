@@ -26,7 +26,7 @@ export default function AddGoal() {
         <Field
           value={title}
           onChangeText={setTitle}
-          placeholder="Ship LockedIn v1"
+          placeholder="Post on social media everyday"
           autoFocus
           returnKeyType="done"
           onSubmitEditing={submit}
