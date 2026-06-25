@@ -10,7 +10,7 @@ import { Screen, ScreenHeader } from "@/components/screen";
 import { TaskComposer } from "@/components/task-composer";
 import { BodyStrong, Caption, Label } from "@/components/typography";
 import { formatClock } from "@/lib/date";
-import { pendingForGoal } from "@/lib/selectors";
+import { pendingForGoal, tasksForGoalAll } from "@/lib/selectors";
 import { useApp } from "@/lib/store";
 import { useCountdown } from "@/lib/use-countdown";
 import { COLORS, RADIUS } from "@/lib/theme";
@@ -58,7 +58,8 @@ export default function Tasks() {
       ) : null}
 
       {goals.map((goal) => {
-        const pending = pendingForGoal(state.tasks, goal.id);
+        const tasks = tasksForGoalAll(state.tasks, goal.id);
+        const pendingCount = pendingForGoal(state.tasks, goal.id).length;
         return (
           <View key={goal.id} style={{ marginTop: 24 }}>
             <Pressable
@@ -66,12 +67,41 @@ export default function Tasks() {
               style={{ flexDirection: "row", alignItems: "center", gap: 8 }}
             >
               <Label style={{ flex: 1, color: COLORS.coral }}>{goal.title}</Label>
-              <Caption>{pending.length}</Caption>
+              <Caption>{pendingCount}</Caption>
               <Ionicons name="chevron-forward" size={16} color={COLORS.subtle} />
             </Pressable>
 
             <View style={{ marginTop: 10, gap: 8 }}>
-              {pending.map((t) => {
+              {tasks.map((t) => {
+                if (t.status !== "pending") {
+                  const done = t.status === "done";
+                  return (
+                    <View
+                      key={t.id}
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        gap: 10,
+                        borderRadius: RADIUS.xl,
+                        borderWidth: 1,
+                        borderColor: COLORS.line,
+                        padding: 16,
+                      }}
+                    >
+                      <Ionicons
+                        name={done ? "checkmark-circle" : "close-circle-outline"}
+                        size={18}
+                        color={done ? COLORS.coral : COLORS.subtle}
+                      />
+                      <BodyStrong
+                        style={{ flex: 1, fontSize: 15, textDecorationLine: "line-through" }}
+                        color={COLORS.subtle}
+                      >
+                        {t.title}
+                      </BodyStrong>
+                    </View>
+                  );
+                }
                 const isActive = t.id === currentTask?.id;
                 return (
                   <Pressable

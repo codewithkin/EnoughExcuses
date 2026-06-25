@@ -9,7 +9,7 @@ import { AddRow, Card, SectionLabel } from "@/components/primitives";
 import { ProgressRing } from "@/components/progress-ring";
 import { TaskComposer } from "@/components/task-composer";
 import { BodyMuted, BodyStrong, Caption, Heading, Label, Title } from "@/components/typography";
-import { goalStats, pendingForGoal } from "@/lib/selectors";
+import { goalStats, tasksForGoalAll } from "@/lib/selectors";
 import { useApp } from "@/lib/store";
 import { COLORS, RADIUS } from "@/lib/theme";
 
@@ -37,7 +37,7 @@ export default function GoalDetail() {
   }
 
   const stats = goalStats(state.tasks, goal.id);
-  const pending = pendingForGoal(state.tasks, goal.id);
+  const tasks = tasksForGoalAll(state.tasks, goal.id);
   const isPrimary = state.primaryGoalId === goal.id;
 
   function saveTitle() {
@@ -145,32 +145,63 @@ export default function GoalDetail() {
         ) : null}
 
         <SectionLabel style={{ marginTop: 28 }}>Tasks</SectionLabel>
-        {pending.length === 0 ? (
+        {tasks.length === 0 ? (
           <BodyMuted>Nothing queued for this one yet.</BodyMuted>
         ) : (
           <View style={{ gap: 8 }}>
-            {pending.map((t) => (
-              <Pressable
-                key={t.id}
-                onPress={() => startTask(t.id)}
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  gap: 10,
-                  borderRadius: RADIUS.xl,
-                  borderWidth: 1,
-                  borderColor: COLORS.line,
-                  backgroundColor: COLORS.card,
-                  padding: 16,
-                }}
-              >
-                <View style={{ flex: 1 }}>
-                  <BodyStrong style={{ fontSize: 15 }}>{t.title}</BodyStrong>
-                  <Caption style={{ marginTop: 2 }}>{t.durationMin}m</Caption>
-                </View>
-                <Ionicons name="play-circle" size={24} color={COLORS.coral} />
-              </Pressable>
-            ))}
+            {tasks.map((t) => {
+              if (t.status !== "pending") {
+                const done = t.status === "done";
+                return (
+                  <View
+                    key={t.id}
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      gap: 10,
+                      borderRadius: RADIUS.xl,
+                      borderWidth: 1,
+                      borderColor: COLORS.line,
+                      padding: 16,
+                    }}
+                  >
+                    <Ionicons
+                      name={done ? "checkmark-circle" : "close-circle-outline"}
+                      size={18}
+                      color={done ? COLORS.coral : COLORS.subtle}
+                    />
+                    <BodyStrong
+                      style={{ flex: 1, fontSize: 15, textDecorationLine: "line-through" }}
+                      color={COLORS.subtle}
+                    >
+                      {t.title}
+                    </BodyStrong>
+                  </View>
+                );
+              }
+              return (
+                <Pressable
+                  key={t.id}
+                  onPress={() => startTask(t.id)}
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: 10,
+                    borderRadius: RADIUS.xl,
+                    borderWidth: 1,
+                    borderColor: COLORS.line,
+                    backgroundColor: COLORS.card,
+                    padding: 16,
+                  }}
+                >
+                  <View style={{ flex: 1 }}>
+                    <BodyStrong style={{ fontSize: 15 }}>{t.title}</BodyStrong>
+                    <Caption style={{ marginTop: 2 }}>{t.durationMin}m</Caption>
+                  </View>
+                  <Ionicons name="play-circle" size={24} color={COLORS.coral} />
+                </Pressable>
+              );
+            })}
           </View>
         )}
 

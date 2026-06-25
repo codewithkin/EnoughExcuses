@@ -34,6 +34,15 @@ export function pendingForGoal(tasks: Task[], goalId: string | null): Task[] {
   return tasks.filter((t) => t.status === "pending" && t.goalId === goalId);
 }
 
+// All of a goal's tasks: pending first, then completed/skipped (kept visible, not hidden).
+export function tasksForGoalAll(tasks: Task[], goalId: string | null): Task[] {
+  const pending = tasks.filter((t) => t.status === "pending" && t.goalId === goalId);
+  const settled = tasks.filter(
+    (t) => (t.status === "done" || t.status === "skipped") && t.goalId === goalId,
+  );
+  return [...pending, ...settled];
+}
+
 export type GoalGroup = { goal: Goal | null; tasks: Task[] };
 
 // Pending tasks grouped by goal, primary goal first, then by goal order.
