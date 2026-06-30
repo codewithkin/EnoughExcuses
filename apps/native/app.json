@@ -1,13 +1,13 @@
 {
   "expo": {
-    "scheme": "lockedin",
+    "scheme": "excuseless",
     "userInterfaceStyle": "automatic",
     "orientation": "default",
     "web": {
       "bundler": "metro"
     },
-    "name": "LockedIn",
-    "slug": "lockedin",
+    "name": "ExcuseLess",
+    "slug": "excuseless",
     "icon": "./assets/images/icon.png",
     "plugins": [
       "expo-font",
@@ -36,7 +36,7 @@
       "reactCompiler": true
     },
     "android": {
-      "package": "com.codewithkin.lockedin",
+      "package": "com.codewithkin.excuseless",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#000000"
@@ -47,11 +47,6 @@
         "android.permission.FOREGROUND_SERVICE",
         "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"
       ]
-    },
-    "extra": {
-      "eas": {
-        "projectId": "29d837a2-e52d-4466-b3ce-bab4e1764b1f"
-      }
     }
   }
 }
