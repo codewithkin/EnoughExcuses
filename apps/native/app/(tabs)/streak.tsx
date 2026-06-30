@@ -72,7 +72,7 @@ export default function Streak() {
           <Timer style={{ marginTop: 8 }} color={COLORS.coral}>
             {streak}
           </Timer>
-          <BodyMuted>day{streak === 1 ? "" : "s"} locked in</BodyMuted>
+          <BodyMuted>day{streak === 1 ? "" : "s"} unbroken</BodyMuted>
         </Animated.View>
       </View>
 
@@ -100,10 +100,10 @@ export default function Streak() {
         <Ionicons name={isPro ? "checkmark-circle" : "sparkles"} size={18} color={COLORS.coral} />
         <View style={{ flex: 1 }}>
           <BodyStrong style={{ fontSize: 14 }}>
-            {isPro ? "LockedIn Pro" : "Unlock history, templates & sync"}
+            {isPro ? "ExcuseLess Pro" : "Unlock history, templates & sync"}
           </BodyStrong>
           <Caption style={{ marginTop: 2 }}>
-            {isPro ? "Active · tap to manage your subscription" : "Go Pro, stay locked in"}
+            {isPro ? "Active · tap to manage your subscription" : "Go Pro, keep the streak alive"}
           </Caption>
         </View>
         <Ionicons name="chevron-forward" size={18} color={COLORS.subtle} />
@@ -116,7 +116,7 @@ export default function Streak() {
             compact
             icon="flame-outline"
             title="No streak yet"
-            message="Knock out one task today and it kicks off. Skip a day and it's cooked."
+            message="Finish one task today to start it. Miss a day and it resets."
           />
         ) : (
           <View style={{ gap: 8 }}>
