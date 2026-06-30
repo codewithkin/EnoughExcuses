@@ -16,7 +16,7 @@ export default function Day() {
     <Screen>
       <ScreenHeader
         title="Today's summary"
-        subtitle="No sugarcoating — here's how today went."
+        subtitle="No sugarcoating. Here's how today went."
         right={<Label style={{ marginTop: 8 }}>{formatDateLabel()}</Label>}
       />
 
