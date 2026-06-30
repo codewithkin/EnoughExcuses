@@ -35,14 +35,14 @@ export default function Tasks() {
   function markDone(id: string) {
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     completeTask(id, 0);
-    toast.show("Nice — marked done.", "info");
+    toast.show("Task done. Onto the next.", "info");
   }
 
   return (
     <Screen>
       <ScreenHeader
         title="Plan"
-        subtitle="Jot down what you wanna get done."
+        subtitle="Line up the tasks you'll actually do."
         right={
           <Pressable onPress={() => router.push("/settings")} hitSlop={10} style={{ marginTop: 6 }}>
             <Ionicons name="settings-outline" size={22} color={COLORS.subtle} />
@@ -56,7 +56,7 @@ export default function Tasks() {
             icon="flag-outline"
             title="No goals yet"
             message="Add a goal first, then stack your tasks under it."
-            actionLabel="New goal"
+            actionLabel="Add a goal"
             onAction={() => router.push("/add-goal")}
           />
         </View>
@@ -161,7 +161,7 @@ export default function Tasks() {
 
       {goals.length > 0 ? (
         <View style={{ marginTop: 28 }}>
-          <AddRow label="New goal" onPress={() => router.push("/add-goal")} />
+          <AddRow label="Add a goal" onPress={() => router.push("/add-goal")} />
         </View>
       ) : null}
     </Screen>
