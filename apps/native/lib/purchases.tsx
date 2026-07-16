@@ -7,6 +7,15 @@ import Purchases, {
 } from "react-native-purchases";
 import RevenueCatUI, { PAYWALL_RESULT } from "react-native-purchases-ui";
 
+// ─────────────────────────────────────────────────────────────────────────
+// PAYMENTS KILL-SWITCH
+// Master switch for in-app payments. Set to `false` to fully disable
+// RevenueCat: the SDK never configures, the paywall never shows, and every
+// user is treated as entitled (full access, free). Flip back to `true` to
+// restore the paywall exactly as it was — no other code changes needed.
+export const PAYMENTS_ENABLED = false;
+// ─────────────────────────────────────────────────────────────────────────
+
 // The entitlement identifier configured in the RevenueCat dashboard.
 export const PRO_ENTITLEMENT = "LockedIn Pro";
 
@@ -49,6 +58,12 @@ export function PurchasesProvider({ children }: { children: React.ReactNode }) {
   const [currentOffering, setCurrentOffering] = useState<PurchasesOffering | null>(null);
 
   useEffect(() => {
+    // Payments disabled: skip all RevenueCat native calls, mark ready, done.
+    if (!PAYMENTS_ENABLED) {
+      setReady(true);
+      return;
+    }
+
     let mounted = true;
 
     const onUpdate = (info: CustomerInfo) => {
@@ -134,18 +149,33 @@ export function PurchasesProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const value = useMemo<PurchasesContextType>(
-    () => ({
-      ready,
-      isPro: hasPro(customerInfo),
-      customerInfo,
-      currentOffering,
-      paywallAvailable: !!currentOffering,
-      presentPaywall,
-      presentPaywallIfNeeded,
-      presentCustomerCenter,
-      restore,
-      refresh,
-    }),
+    () =>
+      !PAYMENTS_ENABLED
+        ? {
+            // Payments off: unlocked for everyone, no paywall, no-op actions.
+            ready: true,
+            isPro: true,
+            customerInfo: null,
+            currentOffering: null,
+            paywallAvailable: false,
+            presentPaywall: async () => true,
+            presentPaywallIfNeeded: async () => true,
+            presentCustomerCenter: async () => {},
+            restore: async () => true,
+            refresh: async () => {},
+          }
+        : {
+            ready,
+            isPro: hasPro(customerInfo),
+            customerInfo,
+            currentOffering,
+            paywallAvailable: !!currentOffering,
+            presentPaywall,
+            presentPaywallIfNeeded,
+            presentCustomerCenter,
+            restore,
+            refresh,
+          },
     [
       ready,
       customerInfo,
