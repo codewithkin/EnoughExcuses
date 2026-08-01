@@ -12,6 +12,15 @@
     "plugins": [
       "expo-font",
       [
+        "expo-build-properties",
+        {
+          "android": {
+            "enableProguardInReleaseBuilds": true,
+            "enableShrinkResourcesInReleaseBuilds": true
+          }
+        }
+      ],
+      [
         "expo-splash-screen",
         {
           "backgroundColor": "#F4F3F1",
@@ -47,6 +56,11 @@
         "android.permission.FOREGROUND_SERVICE",
         "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"
       ]
+    },
+    "extra": {
+      "eas": {
+        "projectId": "5cd2aaf1-dc71-4799-a866-f1078f771cef"
+      }
     }
   }
 }

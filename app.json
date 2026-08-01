@@ -1,0 +1,12 @@
+{
+  "expo": {
+    "extra": {
+      "eas": {
+        "projectId": "29d837a2-e52d-4466-b3ce-bab4e1764b1f"
+      }
+    },
+    "android": {
+      "package": "com.codewithkin.excuseless"
+    }
+  }
+}

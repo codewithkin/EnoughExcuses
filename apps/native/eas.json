@@ -19,6 +19,9 @@
     },
     "production": {
       "autoIncrement": true,
+      "android": {
+        "gradleCommand": ":app:assembleRelease -PreactNativeArchitectures=armeabi-v7a,arm64-v8a"
+      },
       "env": {
         "DATABASE_URL": "postgresql://user:password@localhost:5432/lockedin"
       }
