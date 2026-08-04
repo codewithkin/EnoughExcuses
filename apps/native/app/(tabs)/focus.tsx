@@ -36,6 +36,7 @@ export default function Focus() {
     skipTask,
     pauseSession,
     resumeSession,
+    extendSession,
   } = useApp();
   const countdown = useCountdown();
   const sheetRef = useRef<BottomSheet>(null);
@@ -111,6 +112,11 @@ export default function Focus() {
     else pauseSession();
   }
 
+  function addTime(minutes: number) {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    extendSession(minutes);
+  }
+
   const variantProps: TimerVariantProps = {
     taskTitle: currentTask.title,
     goalTitle: goal?.title,
@@ -122,6 +128,7 @@ export default function Focus() {
     timeUp,
     onDone,
     onSkip,
+    onAddTime: addTime,
   };
 
   return (
