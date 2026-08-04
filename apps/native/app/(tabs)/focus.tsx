@@ -26,6 +26,7 @@ import {
   showTimerControls,
   updateTimerControls,
 } from "@/lib/music-control";
+import { syncAllWidgets } from "@/lib/widget-sync";
 import { playStartFocus, playTaskComplete } from "@/lib/sounds";
 import { useApp } from "@/lib/store";
 import { type Task } from "@/lib/types";
@@ -104,6 +105,7 @@ export default function Focus() {
     const wasLastInQueue = queue.length === 1;
     const nxt = nextInGoal(state.tasks, currentTask!.goalId, currentTask!.id);
     completeTask(currentTask!.id, elapsed);
+    syncAllWidgets();
     if (wasFirstToday) router.push("/first-win");
     else if (wasLastInQueue) router.push("/day-summary");
     else if (nxt) setNextUp(nxt);
@@ -113,6 +115,7 @@ export default function Focus() {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     const wasLastInQueue = queue.length === 1;
     skipTask(currentTask!.id);
+    syncAllWidgets();
     if (wasLastInQueue) router.push("/day-summary");
   }
 
@@ -278,6 +281,7 @@ export default function Focus() {
                     label="End"
                     onPress={() => {
                       clearActiveTask();
+                      syncAllWidgets();
                       setShowExitConfirm(false);
                     }}
                   />

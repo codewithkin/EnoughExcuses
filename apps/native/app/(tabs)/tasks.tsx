@@ -10,6 +10,7 @@ import { useToast } from "@/components/toast";
 import { BodyStrong, Caption, Label } from "@/components/typography";
 import { formatClock } from "@/lib/date";
 import { pendingForGoal, tasksForGoalAll } from "@/lib/selectors";
+import { syncAllWidgets } from "@/lib/widget-sync";
 import { useApp } from "@/lib/store";
 import { useCountdown } from "@/lib/use-countdown";
 import { COLORS, RADIUS } from "@/lib/theme";
@@ -36,6 +37,7 @@ export default function Tasks() {
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     completeTask(id, 0);
     toast.show("Task done. Onto the next.", "info");
+    syncAllWidgets();
   }
 
   return (
