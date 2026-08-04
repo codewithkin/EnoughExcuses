@@ -45,7 +45,7 @@ type AppContextType = {
   skipTask: (id: string) => void;
   completeOnboarding: (input: OnboardingInput) => void;
   hideHintForever: (id: string) => void;
-  editTask: (id: string, patch: { title?: string; durationMin?: number }) => void;
+  editTask: (id: string, patch: { title?: string; durationMin?: number; recurringTime?: string }) => void;
   extendSession: (minutes: number) => void;
   setPrimaryGoal: (id: string) => void;
   setTimerStyle: (style: TimerStyle) => void;
@@ -397,7 +397,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     [],
   );
 
-  const editTask = useCallback((id: string, patch: { title?: string; durationMin?: number }) => {
+  const editTask = useCallback((id: string, patch: { title?: string; durationMin?: number; recurringTime?: string }) => {
     setState((s) => {
       const tasks = s.tasks.map((t) =>
         t.id === id
@@ -405,6 +405,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
               ...t,
               ...(patch.title !== undefined ? { title: patch.title.trim() } : {}),
               ...(patch.durationMin !== undefined ? { durationMin: patch.durationMin } : {}),
+              ...(patch.recurringTime !== undefined ? { recurringTime: patch.recurringTime } : {}),
             }
           : t,
       );
