@@ -196,7 +196,10 @@ export default function GoalDetail() {
                 >
                   <View style={{ flex: 1 }}>
                     <BodyStrong style={{ fontSize: 15 }}>{t.title}</BodyStrong>
-                    <Caption style={{ marginTop: 2 }}>{t.durationMin}m</Caption>
+                    <View style={{ flexDirection: "row", alignItems: "center", gap: 4, marginTop: 2 }}>
+                      {t.recurringTime ? <Ionicons name="reload-outline" size={11} color={COLORS.subtle} /> : null}
+                      <Caption>{t.durationMin}m</Caption>
+                    </View>
                   </View>
                   <Ionicons name="play-circle" size={24} color={COLORS.coral} />
                 </Pressable>
