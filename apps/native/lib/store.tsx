@@ -1,4 +1,5 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { AppState } from "react-native";
 
 import { dayKey, isToday, isYesterday, newId } from "./date";
 import { loadState, saveState } from "./storage";
@@ -69,6 +70,22 @@ function computeToday(tasks: Task[]) {
   return { completed, skipped, focusSeconds };
 }
 
+function reconcileRecurring(tasks: Task[]): Task[] {
+  const now = Date.now();
+  return tasks.map((t) => {
+    if (!t.recurringTime || (t.status !== "done" && t.status !== "skipped")) return t;
+    if (!t.completedAt) return t;
+    const [h, m] = t.recurringTime.split(":").map(Number);
+    const todayReset = new Date();
+    todayReset.setHours(h, m, 0, 0);
+    const completed = new Date(t.completedAt).getTime();
+    if (now >= todayReset.getTime() && completed < todayReset.getTime()) {
+      return { ...t, status: "pending" as const, completedAt: undefined, focusSeconds: undefined };
+    }
+    return t;
+  });
+}
+
 function upsertHistory(history: DayRecord[], record: DayRecord): DayRecord[] {
   const rest = history.filter((h) => h.date !== record.date);
   return [...rest, record].sort((a, b) => (a.date < b.date ? 1 : -1));
@@ -119,13 +136,23 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     let mounted = true;
     loadState().then((loaded) => {
       if (!mounted) return;
-      setState(loaded);
+      const reconciled = reconcileRecurring(loaded.tasks);
+      setState({ ...loaded, tasks: reconciled });
       setReady(true);
     });
     return () => {
       mounted = false;
     };
   }, []);
+
+  useEffect(() => {
+    if (!ready) return;
+    const sub = AppState.addEventListener("change", (nextState) => {
+      if (nextState !== "active") return;
+      setState((s) => ({ ...s, tasks: reconcileRecurring(s.tasks) }));
+    });
+    return () => sub.remove();
+  }, [ready]);
 
   useEffect(() => {
     if (ready) saveState(state);
