@@ -16,3 +16,13 @@
 **/coverage/
 **/*.log
 **/.DS_Store
+
+# Native projects are meant to be CNG-managed (generated fresh from
+# app.config.js by EAS Build's own prebuild step), not hand-committed.
+# If a stray apps/native/android or apps/native/ios ever reappears locally
+# (e.g. from running `expo prebuild` without --clean), EAS Build silently
+# detects it and uses whatever's hardcoded there instead of app.config.js —
+# which is exactly what caused the .dev app-variant package suffix to be
+# ignored. Excluded here so that can never happen again.
+apps/native/android/
+apps/native/ios/
