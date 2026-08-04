@@ -12,6 +12,15 @@ export const NOTIF_ID = {
   liveTimer: "lockedin.live-timer",
 };
 
+export const CATEGORY_LIVE_TIMER = "live-timer";
+
+export const LIVE_ACTIONS = {
+  pause: "pause",
+  resume: "resume",
+  add5: "add5",
+  skip: "skip",
+} as const;
+
 Notifications.setNotificationHandler({
   handleNotification: async (notification) => {
     const isLiveUpdate = notification.request.identifier === NOTIF_ID.liveTimer;
@@ -37,6 +46,29 @@ export async function ensureNotificationSetup(): Promise<boolean> {
       importance: Notifications.AndroidImportance.LOW,
     });
   }
+
+  await Notifications.setNotificationCategoryAsync(CATEGORY_LIVE_TIMER, [
+    {
+      identifier: LIVE_ACTIONS.pause,
+      buttonTitle: "Pause",
+      options: { opensAppToForeground: false },
+    },
+    {
+      identifier: LIVE_ACTIONS.resume,
+      buttonTitle: "Resume",
+      options: { opensAppToForeground: false },
+    },
+    {
+      identifier: LIVE_ACTIONS.add5,
+      buttonTitle: "+5m",
+      options: { opensAppToForeground: false },
+    },
+    {
+      identifier: LIVE_ACTIONS.skip,
+      buttonTitle: "Skip",
+      options: { opensAppToForeground: false, isDestructive: true },
+    },
+  ]);
 
   const current = await Notifications.getPermissionsAsync();
   if (current.granted) return true;
@@ -169,6 +201,30 @@ export const cancelRecurringTask = (taskId: string) => cancel(recurringTaskNotif
 
 export const hideLiveTimer = () => cancel(NOTIF_ID.liveTimer);
 
+// Sets up a listener for live timer notification actions (Pause, Resume, +5m, Skip).
+// Returns a cleanup function. Call inside a useEffect.
+export function onLiveTimerAction(
+  handlers: {
+    onPause: () => void;
+    onResume: () => void;
+    onAdd5: () => void;
+    onSkip: () => void;
+  },
+): () => void {
+  const sub = Notifications.addNotificationResponseReceivedListener((response) => {
+    const actionId = response.actionIdentifier;
+    if (response.notification.request.identifier !== NOTIF_ID.liveTimer) return;
+    if (actionId === Notifications.DEFAULT_ACTION_IDENTIFIER) return;
+    switch (actionId) {
+      case LIVE_ACTIONS.pause: handlers.onPause(); break;
+      case LIVE_ACTIONS.resume: handlers.onResume(); break;
+      case LIVE_ACTIONS.add5: handlers.onAdd5(); break;
+      case LIVE_ACTIONS.skip: handlers.onSkip(); break;
+    }
+  });
+  return () => sub.remove();
+}
+
 // Shows or updates a persistent notification with the current remaining time.
 // Visible on the lock screen and in the notification center on both platforms.
 // On Android it sits in the status bar as a low-importance silent notification.
@@ -187,6 +243,7 @@ export async function showLiveTimer(
       body: `"${taskTitle}"${goalPart}`,
       sound: false,
       sticky: true,
+      categoryIdentifier: CATEGORY_LIVE_TIMER,
       ...(Platform.OS === "ios" ? { interruptionLevel: "passive" } : {}),
       ...(Platform.OS === "android" ? { channelId: "live-timer" } : {}),
     },
