@@ -38,7 +38,76 @@
           "color": "#34D399"
         }
       ],
-      "expo-audio"
+      "expo-audio",
+      [
+        "expo-widgets",
+        {
+          "groupIdentifier": "group.com.codewithkin.excuseless",
+          "widgets": [
+            {
+              "name": "NextTaskWidget",
+              "displayName": "Next Task",
+              "description": "Next task or current focus timer",
+              "supportedFamilies": ["systemSmall"]
+            },
+            {
+              "name": "TodayProgressWidget",
+              "displayName": "Today's Progress",
+              "description": "Daily stats at a glance",
+              "supportedFamilies": ["systemMedium"]
+            },
+            {
+              "name": "QuickStartWidget",
+              "displayName": "Quick Start",
+              "description": "One tap to start your next task",
+              "supportedFamilies": ["systemSmall"]
+            }
+          ]
+        }
+      ],
+      [
+        "react-native-android-widget",
+        {
+          "fonts": [
+            "./assets/fonts/HankenGrotesk-Regular.ttf",
+            "./assets/fonts/HankenGrotesk-Medium.ttf",
+            "./assets/fonts/HankenGrotesk-Bold.ttf",
+            "./assets/fonts/JetBrainsMono-Medium.ttf"
+          ],
+          "widgets": [
+            {
+              "name": "NextTaskWidget",
+              "label": "Next Task",
+              "minWidth": "250dp",
+              "minHeight": "110dp",
+              "targetCellWidth": 4,
+              "targetCellHeight": 2,
+              "description": "Your next task or current focus",
+              "updatePeriodMillis": 1800000
+            },
+            {
+              "name": "TodayProgressWidget",
+              "label": "Today's Progress",
+              "minWidth": "320dp",
+              "minHeight": "120dp",
+              "targetCellWidth": 5,
+              "targetCellHeight": 2,
+              "description": "Today's stats at a glance",
+              "updatePeriodMillis": 1800000
+            },
+            {
+              "name": "QuickStartWidget",
+              "label": "Quick Start",
+              "minWidth": "250dp",
+              "minHeight": "110dp",
+              "targetCellWidth": 4,
+              "targetCellHeight": 2,
+              "description": "One tap to start",
+              "updatePeriodMillis": 1800000
+            }
+          ]
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,
@@ -56,6 +125,10 @@
         "android.permission.FOREGROUND_SERVICE",
         "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"
       ]
+    },
+    "ios": {
+      "bundleIdentifier": "com.codewithkin.excuseless",
+      "supportsTablet": true
     },
     "extra": {
       "eas": {
