@@ -19,7 +19,7 @@ import { RingTimer } from "@/components/timers/ring-timer";
 import { type TimerVariantProps } from "@/components/timers/types";
 import { Body, BodyMuted, Caption, Label, Title } from "@/components/typography";
 import { nextInGoal } from "@/lib/selectors";
-import { hideLiveTimer, showLiveTimer } from "@/lib/notifications";
+import { hideLiveTimer, onLiveTimerAction, showLiveTimer } from "@/lib/notifications";
 import { playStartFocus, playTaskComplete } from "@/lib/sounds";
 import { useApp } from "@/lib/store";
 import { type Task } from "@/lib/types";
@@ -153,6 +153,17 @@ export default function Focus() {
       hideLiveTimer();
     };
   }, [countdown.active, countdown.paused, currentTask?.id]);
+
+  // Handle notification action buttons (Pause, Resume, +5m, Skip).
+  useEffect(() => {
+    if (!countdown.active) return;
+    return onLiveTimerAction({
+      onPause: pauseSession,
+      onResume: resumeSession,
+      onAdd5: () => extendSession(5),
+      onSkip,
+    });
+  }, [countdown.active, pauseSession, resumeSession, extendSession, onSkip]);
 
   // Android back button → show confirm dialog instead of navigating away.
   useEffect(() => {
