@@ -1,0 +1,18 @@
+# EAS Build uploads the whole monorepo root so pnpm can resolve workspace
+# packages, but it does NOT respect nested per-package .gitignore files
+# (only the root .gitignore). Build caches like apps/web/.next slip through
+# and bloat the archive even though they're already properly gitignored
+# and completely irrelevant to building the native app. Listed explicitly
+# here so they're excluded regardless of what's locally present.
+
+**/.next/
+**/.turbo/
+**/.vercel/
+**/.wrangler/
+**/.output/
+**/.nitro/
+**/dist/
+**/build/
+**/coverage/
+**/*.log
+**/.DS_Store

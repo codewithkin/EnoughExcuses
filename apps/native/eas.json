@@ -8,14 +8,16 @@
       "developmentClient": true,
       "distribution": "internal",
       "env": {
-        "DATABASE_URL": "postgresql://user:password@localhost:5432/lockedin"
+        "DATABASE_URL": "postgresql://user:password@localhost:5432/lockedin",
+        "APP_VARIANT": "development"
       },
       "channel": "development"
     },
     "preview": {
       "distribution": "internal",
       "env": {
-        "DATABASE_URL": "postgresql://user:password@localhost:5432/lockedin"
+        "DATABASE_URL": "postgresql://user:password@localhost:5432/lockedin",
+        "APP_VARIANT": "preview"
       },
       "channel": "preview"
     },
