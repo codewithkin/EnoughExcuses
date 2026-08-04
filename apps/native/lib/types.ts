@@ -15,6 +15,7 @@ export type Task = {
   createdAt: string;
   completedAt?: string;
   focusSeconds?: number;
+  recurringTime?: string;
 };
 
 export type DayRecord = {
