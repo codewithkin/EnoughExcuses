@@ -16,7 +16,8 @@
         {
           "android": {
             "enableProguardInReleaseBuilds": true,
-            "enableShrinkResourcesInReleaseBuilds": true
+            "enableShrinkResourcesInReleaseBuilds": true,
+            "enableMinifyInReleaseBuilds": true
           }
         }
       ],
@@ -48,19 +49,25 @@
               "name": "NextTaskWidget",
               "displayName": "Next Task",
               "description": "Next task or current focus timer",
-              "supportedFamilies": ["systemSmall"]
+              "supportedFamilies": [
+                "systemSmall"
+              ]
             },
             {
               "name": "TodayProgressWidget",
               "displayName": "Today's Progress",
               "description": "Daily stats at a glance",
-              "supportedFamilies": ["systemMedium"]
+              "supportedFamilies": [
+                "systemMedium"
+              ]
             },
             {
               "name": "QuickStartWidget",
               "displayName": "Quick Start",
               "description": "One tap to start your next task",
-              "supportedFamilies": ["systemSmall"]
+              "supportedFamilies": [
+                "systemSmall"
+              ]
             }
           ]
         }
@@ -123,6 +130,10 @@
         "android.permission.RECORD_AUDIO",
         "android.permission.MODIFY_AUDIO_SETTINGS",
         "android.permission.FOREGROUND_SERVICE",
+        "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.MODIFY_AUDIO_SETTINGS",
+        "android.permission.FOREGROUND_SERVICE",
         "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"
       ]
     },
@@ -134,6 +145,12 @@
       "eas": {
         "projectId": "5cd2aaf1-dc71-4799-a866-f1078f771cef"
       }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/5cd2aaf1-dc71-4799-a866-f1078f771cef"
     }
   }
 }

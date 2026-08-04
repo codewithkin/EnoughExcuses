@@ -9,19 +9,22 @@
       "distribution": "internal",
       "env": {
         "DATABASE_URL": "postgresql://user:password@localhost:5432/lockedin"
-      }
+      },
+      "channel": "development"
     },
     "preview": {
       "distribution": "internal",
       "env": {
         "DATABASE_URL": "postgresql://user:password@localhost:5432/lockedin"
-      }
+      },
+      "channel": "preview"
     },
     "production": {
       "autoIncrement": true,
       "env": {
         "DATABASE_URL": "postgresql://user:password@localhost:5432/lockedin"
-      }
+      },
+      "channel": "production"
     }
   },
   "submit": {
