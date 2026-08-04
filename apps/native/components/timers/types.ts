@@ -9,4 +9,5 @@ export type TimerVariantProps = {
   timeUp: boolean;
   onDone: () => void;
   onSkip: () => void;
+  onAddTime: (minutes: number) => void;
 };
