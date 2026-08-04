@@ -110,6 +110,7 @@ export function TaskRow({
         </Body>
       ) : (
         <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
+          {task.recurringTime ? <Ionicons name="reload-outline" size={12} color={COLORS.subtle} /> : null}
           <Caption style={{ fontFamily: FONTS.monoMedium }}>
             {skipped ? "skip" : `${task.durationMin}m`}
           </Caption>
