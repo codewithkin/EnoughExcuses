@@ -8,6 +8,7 @@ import { Hint } from "@/components/hint";
 import { BodyMuted, Caption, Display, Label, Title } from "@/components/typography";
 import { formatClock } from "@/lib/date";
 import { COLORS, RADIUS } from "@/lib/theme";
+import { AddTimeButton } from "./add-time-button";
 import { type TimerVariantProps } from "./types";
 
 const SIZE = 248;
@@ -23,6 +24,7 @@ export function RingTimer({
   timeUp,
   onDone,
   onSkip,
+  onAddTime,
 }: TimerVariantProps) {
   const r = (SIZE - STROKE) / 2;
   const c = 2 * Math.PI * r;
@@ -87,6 +89,11 @@ export function RingTimer({
           </View>
         </View>
         <Caption style={{ marginTop: 18 }}>of {formatClock(total)} focus</Caption>
+      </View>
+
+      <View style={{ flexDirection: "row", justifyContent: "center", gap: 10, marginTop: 16 }}>
+        <AddTimeButton minutes={5} onPress={() => onAddTime(5)} />
+        <AddTimeButton minutes={10} onPress={() => onAddTime(10)} />
       </View>
 
       <Animated.View entering={FadeIn} style={{ marginBottom: 16 }}>
