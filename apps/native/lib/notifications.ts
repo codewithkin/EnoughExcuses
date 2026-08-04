@@ -165,6 +165,8 @@ export async function scheduleRecurringTask(
   });
 }
 
+export const cancelRecurringTask = (taskId: string) => cancel(recurringTaskNotifId(taskId));
+
 export const hideLiveTimer = () => cancel(NOTIF_ID.liveTimer);
 
 // Shows or updates a persistent notification with the current remaining time.

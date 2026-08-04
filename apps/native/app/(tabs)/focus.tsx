@@ -19,6 +19,7 @@ import { RingTimer } from "@/components/timers/ring-timer";
 import { type TimerVariantProps } from "@/components/timers/types";
 import { Body, BodyMuted, Caption, Label, Title } from "@/components/typography";
 import { nextInGoal } from "@/lib/selectors";
+import { hideLiveTimer, showLiveTimer } from "@/lib/notifications";
 import { playStartFocus, playTaskComplete } from "@/lib/sounds";
 import { useApp } from "@/lib/store";
 import { type Task } from "@/lib/types";
@@ -128,6 +129,30 @@ export default function Focus() {
     });
     return () => sub.remove();
   }, [countdown.active, countdown.paused, pauseSession]);
+
+  // Live notification — visible on lock screen / notification center while focused.
+  const liveRef = useRef({ remaining: 0, total: 0, title: "", goalTitle: "" });
+  liveRef.current = {
+    remaining: countdown.remaining,
+    total: countdown.total,
+    title: currentTask?.title ?? "",
+    goalTitle: goal?.title ?? "",
+  };
+  useEffect(() => {
+    if (!countdown.active || !currentTask) {
+      hideLiveTimer();
+      return;
+    }
+    showLiveTimer(liveRef.current.remaining, liveRef.current.total, liveRef.current.title, liveRef.current.goalTitle);
+    const interval = setInterval(() => {
+      const r = liveRef.current;
+      showLiveTimer(r.remaining, r.total, r.title, r.goalTitle);
+    }, 10_000);
+    return () => {
+      clearInterval(interval);
+      hideLiveTimer();
+    };
+  }, [countdown.active, countdown.paused, currentTask?.id]);
 
   // Android back button → show confirm dialog instead of navigating away.
   useEffect(() => {
