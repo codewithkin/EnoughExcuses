@@ -13,7 +13,7 @@ import {
   type TimerStyle,
 } from "./types";
 
-type AddTaskInput = { title: string; durationMin: number; goalId?: string | null };
+type AddTaskInput = { title: string; durationMin: number; goalId?: string | null; recurringTime?: string };
 
 export type OnboardingInput = {
   focusAreas: string[];
@@ -199,6 +199,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     durationMin: input.durationMin,
     status: "pending",
     createdAt: new Date().toISOString(),
+    ...(input.recurringTime !== undefined ? { recurringTime: input.recurringTime } : {}),
   });
 
   const addTask = useCallback((input: AddTaskInput) => {
