@@ -99,9 +99,12 @@ export const GoalTasksSheet = forwardRef<BottomSheet, Props>(function GoalTasksS
                     >
                       {t.title}
                     </BodyStrong>
-                    <Caption style={{ marginTop: 2 }}>
-                      {settled ? (t.status === "done" ? "done" : "skipped") : `${t.durationMin}m`}
-                    </Caption>
+                    <View style={{ flexDirection: "row", alignItems: "center", gap: 4, marginTop: 2 }}>
+                      {!settled && t.recurringTime ? <Ionicons name="reload-outline" size={11} color={COLORS.subtle} /> : null}
+                      <Caption>
+                        {settled ? (t.status === "done" ? "done" : "skipped") : `${t.durationMin}m`}
+                      </Caption>
+                    </View>
                   </View>
                   {!settled ? <Ionicons name="play" size={16} color={COLORS.coral} /> : null}
                 </Pressable>
