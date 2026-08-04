@@ -21,6 +21,7 @@ async function updateIOSWidgets(data: WidgetData) {
     const NextTaskWidget = require("@/widgets/NextTaskWidget.ios").default;
     const QuickStartWidget = require("@/widgets/QuickStartWidget.ios").default;
     const TodayProgressWidget = require("@/widgets/TodayProgressWidget.ios").default;
+    const FocusTimerLockScreen = require("@/widgets/FocusTimerLockScreen").default;
 
     NextTaskWidget.updateSnapshot({
       title: data.session.active ? data.session.taskTitle : (data.nextTask?.title ?? "All done!"),
@@ -44,6 +45,13 @@ async function updateIOSWidgets(data: WidgetData) {
       totalPending: data.todayStats.totalPending,
       streak: data.streak,
       focusSeconds: data.todayStats.focusSeconds,
+    });
+
+    FocusTimerLockScreen.updateSnapshot({
+      active: data.session.active,
+      paused: data.session.paused,
+      remaining: data.session.remaining,
+      total: data.session.total,
     });
   } catch {
     // Widgets not registered yet — ignore

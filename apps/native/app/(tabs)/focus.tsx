@@ -26,6 +26,7 @@ import {
   showTimerControls,
   updateTimerControls,
 } from "@/lib/music-control";
+import { stopLiveActivity, syncLiveActivity } from "@/lib/live-activity";
 import { syncAllWidgets } from "@/lib/widget-sync";
 import { playStartFocus, playTaskComplete } from "@/lib/sounds";
 import { useApp } from "@/lib/store";
@@ -208,6 +209,35 @@ export default function Focus() {
       onNextTrack: onSkip,
     });
   }, [countdown.active, resumeSession, pauseSession, extendSession, onSkip]);
+
+  // Live Activity — Dynamic Island + Lock Screen banner (iOS only, no-op on Android).
+  const activityRef = useRef({ remaining: 0, total: 0, title: "", goalTitle: "" });
+  activityRef.current = {
+    remaining: countdown.remaining,
+    total: countdown.total,
+    title: currentTask?.title ?? "",
+    goalTitle: goal?.title ?? "",
+  };
+  useEffect(() => {
+    if (!countdown.active || !currentTask) {
+      stopLiveActivity();
+      return;
+    }
+    const sync = () => {
+      const a = activityRef.current;
+      syncLiveActivity({
+        taskId: currentTask.id,
+        taskTitle: a.title,
+        goalTitle: a.goalTitle,
+        remaining: a.remaining,
+        total: a.total,
+        paused: countdown.paused,
+      });
+    };
+    sync();
+    const interval = setInterval(sync, 10_000);
+    return () => clearInterval(interval);
+  }, [countdown.active, countdown.paused, currentTask?.id]);
 
   // Android back button → show confirm dialog instead of navigating away.
   useEffect(() => {

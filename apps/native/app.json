@@ -68,6 +68,14 @@
               "supportedFamilies": [
                 "systemSmall"
               ]
+            },
+            {
+              "name": "FocusTimerLockScreen",
+              "displayName": "Timer",
+              "description": "Live timer on your lock screen",
+              "supportedFamilies": [
+                "accessoryCircular"
+              ]
             }
           ]
         }
@@ -127,10 +135,6 @@
         "backgroundColor": "#000000"
       },
       "permissions": [
-        "android.permission.RECORD_AUDIO",
-        "android.permission.MODIFY_AUDIO_SETTINGS",
-        "android.permission.FOREGROUND_SERVICE",
-        "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK",
         "android.permission.RECORD_AUDIO",
         "android.permission.MODIFY_AUDIO_SETTINGS",
         "android.permission.FOREGROUND_SERVICE",
