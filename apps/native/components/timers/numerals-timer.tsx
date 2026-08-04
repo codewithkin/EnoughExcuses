@@ -4,6 +4,7 @@ import { PrimaryButton } from "@/components/buttons";
 import { BodyMuted, Caption, Label, Title } from "@/components/typography";
 import { formatClock } from "@/lib/date";
 import { COLORS, FONTS } from "@/lib/theme";
+import { AddTimeButton } from "./add-time-button";
 import { type TimerVariantProps } from "./types";
 
 export function NumeralsTimer({
@@ -16,6 +17,7 @@ export function NumeralsTimer({
   timeUp,
   onDone,
   onSkip,
+  onAddTime,
 }: TimerVariantProps) {
   const pct = total > 0 ? Math.max(0, Math.min(1, elapsed / total)) : 0;
   const blockMin = Math.round(total / 60);
@@ -61,6 +63,11 @@ export function NumeralsTimer({
         <Label style={{ marginTop: 16, color: COLORS.subtle, letterSpacing: 1.5 }}>
           {blockMin} min focus · {formatClock(elapsed)} in
         </Label>
+      </View>
+
+      <View style={{ flexDirection: "row", justifyContent: "center", gap: 10, marginBottom: 8 }}>
+        <AddTimeButton minutes={5} onPress={() => onAddTime(5)} />
+        <AddTimeButton minutes={10} onPress={() => onAddTime(10)} />
       </View>
 
       <View style={{ gap: 8, paddingBottom: 12 }}>
