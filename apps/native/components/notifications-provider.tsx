@@ -2,11 +2,13 @@ import { useEffect } from "react";
 
 import {
   cancelDailyReminder,
+  cancelRecurringTask,
   cancelStreakRisk,
   cancelTaskNudge,
   cancelTimerEnd,
   ensureNotificationSetup,
   scheduleDailyReminder,
+  scheduleRecurringTask,
   scheduleStreakRisk,
   scheduleTaskNudge,
   scheduleTimerEnd,
@@ -63,6 +65,20 @@ export function NotificationsProvider({ children }: { children: React.ReactNode 
     if (prefs.taskNudge && queue.length > 0) scheduleTaskNudge(queue.length);
     else cancelTaskNudge();
   }, [queue.length, onboarded, prefs.taskNudge]);
+
+  // Per-task recurring reminders.
+  useEffect(() => {
+    if (!onboarded) return;
+    const recurring = state.tasks.filter((t) => t.recurringTime);
+    for (const t of recurring) {
+      if (!t.recurringTime) continue;
+      const [h, m] = t.recurringTime.split(":").map(Number);
+      scheduleRecurringTask(t.id, h, m, t.title);
+    }
+    for (const t of state.tasks) {
+      if (!t.recurringTime) cancelRecurringTask(t.id);
+    }
+  }, [state.tasks, onboarded]);
 
   return <>{children}</>;
 }

@@ -128,3 +128,32 @@ export async function scheduleTaskNudge(count: number, hour = 13, minute = 0) {
 }
 
 export const cancelTaskNudge = () => cancel(NOTIF_ID.taskNudge);
+
+// A daily reminder that a specific recurring task is due today.
+export function recurringTaskNotifId(taskId: string) {
+  return `lockedin.recurring.${taskId}`;
+}
+
+export async function scheduleRecurringTask(
+  taskId: string,
+  hour: number,
+  minute: number,
+  taskTitle: string,
+) {
+  await cancel(recurringTaskNotifId(taskId));
+  await Notifications.scheduleNotificationAsync({
+    identifier: recurringTaskNotifId(taskId),
+    content: {
+      title: "Task's up today",
+      body: `"${taskTitle}" — it resets at this time. Show up or it stays.`,
+      sound: true,
+    },
+    trigger: {
+      type: Notifications.SchedulableTriggerInputTypes.DAILY,
+      hour,
+      minute,
+    },
+  });
+}
+
+export const cancelRecurringTask = (taskId: string) => cancel(recurringTaskNotifId(taskId));
