@@ -20,6 +20,12 @@ import { type TimerVariantProps } from "@/components/timers/types";
 import { Body, BodyMuted, Caption, Label, Title } from "@/components/typography";
 import { nextInGoal } from "@/lib/selectors";
 import { hideLiveTimer, onLiveTimerAction, showLiveTimer } from "@/lib/notifications";
+import {
+  hideTimerControls,
+  onTimerControl,
+  showTimerControls,
+  updateTimerControls,
+} from "@/lib/music-control";
 import { playStartFocus, playTaskComplete } from "@/lib/sounds";
 import { useApp } from "@/lib/store";
 import { type Task } from "@/lib/types";
@@ -164,6 +170,41 @@ export default function Focus() {
       onSkip,
     });
   }, [countdown.active, pauseSession, resumeSession, extendSession, onSkip]);
+
+  // Lock screen media controls — shows timer and play/pause/skip/+5m on the lock screen.
+  const musicRef = useRef({ remaining: 0, total: 0, title: "", goalTitle: "" });
+  musicRef.current = {
+    remaining: countdown.remaining,
+    total: countdown.total,
+    title: currentTask?.title ?? "",
+    goalTitle: goal?.title ?? "",
+  };
+  useEffect(() => {
+    if (!countdown.active || !currentTask) {
+      hideTimerControls();
+      return;
+    }
+    showTimerControls(musicRef.current.remaining, musicRef.current.total, musicRef.current.title, musicRef.current.goalTitle);
+    const interval = setInterval(() => {
+      const r = musicRef.current;
+      updateTimerControls(r.remaining, countdown.paused);
+    }, 10_000);
+    return () => {
+      clearInterval(interval);
+      hideTimerControls();
+    };
+  }, [countdown.active, currentTask?.id]);
+
+  // Handle lock screen media control commands (Play, Pause, Skip, +5m).
+  useEffect(() => {
+    if (!countdown.active) return;
+    return onTimerControl({
+      onPlay: resumeSession,
+      onPause: pauseSession,
+      onSkipForward: () => extendSession(5),
+      onNextTrack: onSkip,
+    });
+  }, [countdown.active, resumeSession, pauseSession, extendSession, onSkip]);
 
   // Android back button → show confirm dialog instead of navigating away.
   useEffect(() => {
