@@ -11,6 +11,7 @@ import Animated, {
 import { Caption, Display, Label } from "@/components/typography";
 import { formatClock } from "@/lib/date";
 import { COLORS, FONTS, RADIUS } from "@/lib/theme";
+import { AddTimeButton } from "./add-time-button";
 import { type TimerVariantProps } from "./types";
 
 export function AmbientTimer({
@@ -21,6 +22,7 @@ export function AmbientTimer({
   timeUp,
   onDone,
   onSkip,
+  onAddTime,
 }: TimerVariantProps) {
   const glow = useSharedValue(0);
 
@@ -66,6 +68,11 @@ export function AmbientTimer({
         <Label style={{ marginTop: 16, color: COLORS.subtle, letterSpacing: 1.5 }}>
           {timeUp ? "time's up" : `${formatClock(remaining)} left`}
         </Label>
+      </View>
+
+      <View style={{ flexDirection: "row", justifyContent: "center", gap: 10, marginBottom: 6, marginTop: 4 }}>
+        <AddTimeButton minutes={5} onPress={() => onAddTime(5)} />
+        <AddTimeButton minutes={10} onPress={() => onAddTime(10)} />
       </View>
 
       <View style={{ flexDirection: "row", gap: 10, paddingBottom: 16 }}>
