@@ -135,9 +135,12 @@ export default function Tasks() {
                     <View style={{ flex: 1 }}>
                       {isActive ? <Label style={{ marginBottom: 2 }}>{countdown.paused ? "Paused" : "Focusing now"}</Label> : null}
                       <BodyStrong style={{ fontSize: 15 }}>{t.title}</BodyStrong>
-                      <Caption style={{ marginTop: 2 }}>
-                        {isActive ? formatClock(countdown.remaining) : `${t.durationMin}m`}
-                      </Caption>
+                      <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
+                        {!isActive && t.recurringTime ? <Ionicons name="reload-outline" size={11} color={COLORS.subtle} /> : null}
+                        <Caption style={{ marginTop: 2 }}>
+                          {isActive ? formatClock(countdown.remaining) : `${t.durationMin}m`}
+                        </Caption>
+                      </View>
                     </View>
                     {isActive ? (
                       <Ionicons name={countdown.paused ? "play" : "pause"} size={20} color={COLORS.coral} />
