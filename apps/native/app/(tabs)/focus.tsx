@@ -3,11 +3,12 @@ import type BottomSheet from "@gorhom/bottom-sheet";
 import * as Haptics from "expo-haptics";
 import { activateKeepAwakeAsync, deactivateKeepAwake } from "expo-keep-awake";
 import { useFocusEffect, useRouter } from "expo-router";
+import { Dialog } from "heroui-native";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Pressable, View } from "react-native";
+import { AppState, BackHandler, Pressable, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { PrimaryButton } from "@/components/buttons";
+import { GhostButton, PrimaryButton } from "@/components/buttons";
 import { FocusBackground } from "@/components/focus-background";
 import { FocusChooser } from "@/components/focus-chooser";
 import { GoalTasksSheet } from "@/components/goal-tasks-sheet";
@@ -34,6 +35,7 @@ export default function Focus() {
     setActiveTask,
     completeTask,
     skipTask,
+    clearActiveTask,
     pauseSession,
     resumeSession,
     extendSession,
@@ -41,6 +43,7 @@ export default function Focus() {
   const countdown = useCountdown();
   const sheetRef = useRef<BottomSheet>(null);
   const [nextUp, setNextUp] = useState<Task | null>(null);
+  const [showExitConfirm, setShowExitConfirm] = useState(false);
 
   // Keep the screen awake only while a session is actually running (not paused).
   useFocusEffect(
@@ -117,6 +120,26 @@ export default function Focus() {
     extendSession(minutes);
   }
 
+  // Auto-pause when the app goes to background.
+  useEffect(() => {
+    if (!countdown.active || countdown.paused) return;
+    const sub = AppState.addEventListener("change", (nextAppState) => {
+      if (nextAppState === "background") pauseSession();
+    });
+    return () => sub.remove();
+  }, [countdown.active, countdown.paused, pauseSession]);
+
+  // Android back button → show confirm dialog instead of navigating away.
+  useEffect(() => {
+    if (!countdown.active) return;
+    const onBack = () => {
+      setShowExitConfirm(true);
+      return true;
+    };
+    const handler = BackHandler.addEventListener("hardwareBackPress", onBack);
+    return () => handler.remove();
+  }, [countdown.active]);
+
   const variantProps: TimerVariantProps = {
     taskTitle: currentTask.title,
     goalTitle: goal?.title,
@@ -159,6 +182,34 @@ export default function Focus() {
           setActiveTask(id);
         }}
       />
+
+      <Dialog isOpen={showExitConfirm} onOpenChange={setShowExitConfirm}>
+        <Dialog.Portal>
+          <Dialog.Overlay />
+          <Dialog.Content>
+            <View style={{ padding: 24, alignItems: "center", gap: 16, maxWidth: 300 }}>
+              <Dialog.Title>End focus session?</Dialog.Title>
+              <Dialog.Description>
+                Your progress so far will be saved. You can start a new one anytime.
+              </Dialog.Description>
+              <View style={{ flexDirection: "row", gap: 10, alignSelf: "stretch" }}>
+                <View style={{ flex: 1 }}>
+                  <GhostButton label="Cancel" onPress={() => setShowExitConfirm(false)} />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <PrimaryButton
+                    label="End"
+                    onPress={() => {
+                      clearActiveTask();
+                      setShowExitConfirm(false);
+                    }}
+                  />
+                </View>
+              </View>
+            </View>
+          </Dialog.Content>
+        </Dialog.Portal>
+      </Dialog>
     </SafeAreaView>
   );
 }
