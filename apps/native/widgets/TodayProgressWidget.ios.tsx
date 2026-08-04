@@ -12,34 +12,34 @@ const TodayProgressWidget = (props: Props) => {
   return (
     <VStack>
       <Spacer />
-      <Text modifiers={[font({ name: "JetBrainsMono-Medium", size: 11 }), foregroundStyle("#8A8A94")]}>
+      <Text modifiers={[font({ family: "JetBrainsMono-Medium", size: 11 }), foregroundStyle("#8A8A94")]}>
         Today
       </Text>
-      <Spacer size={4} />
+      <Spacer />
       <HStack>
         <VStack>
-          <Text modifiers={[font({ name: "HankenGrotesk-Bold", size: 20 }), foregroundStyle("#34D399")]}>
+          <Text modifiers={[font({ family: "HankenGrotesk-Bold", size: 20 }), foregroundStyle("#34D399")]}>
             {props.completed}
           </Text>
-          <Text modifiers={[font({ name: "HankenGrotesk", size: 11 }), foregroundStyle("#8A8A94")]}>
+          <Text modifiers={[font({ family: "HankenGrotesk", size: 11 }), foregroundStyle("#8A8A94")]}>
             of {total} done
           </Text>
         </VStack>
         <Spacer />
         <VStack>
-          <Text modifiers={[font({ name: "HankenGrotesk-Bold", size: 20 }), foregroundStyle("#ECEAE6")]}>
+          <Text modifiers={[font({ family: "HankenGrotesk-Bold", size: 20 }), foregroundStyle("#ECEAE6")]}>
             {props.streak}
           </Text>
-          <Text modifiers={[font({ name: "HankenGrotesk", size: 11 }), foregroundStyle("#8A8A94")]}>
+          <Text modifiers={[font({ family: "HankenGrotesk", size: 11 }), foregroundStyle("#8A8A94")]}>
             day streak
           </Text>
         </VStack>
         <Spacer />
         <VStack>
-          <Text modifiers={[font({ name: "JetBrainsMono-Medium", size: 16 }), foregroundStyle("#ECEAE6")]}>
+          <Text modifiers={[font({ family: "JetBrainsMono-Medium", size: 16 }), foregroundStyle("#ECEAE6")]}>
             {formatDurationShort(props.focusSeconds)}
           </Text>
-          <Text modifiers={[font({ name: "HankenGrotesk", size: 11 }), foregroundStyle("#8A8A94")]}>
+          <Text modifiers={[font({ family: "HankenGrotesk", size: 11 }), foregroundStyle("#8A8A94")]}>
             focused
           </Text>
         </VStack>

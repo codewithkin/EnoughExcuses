@@ -17,13 +17,12 @@ const QuickStartWidget = (props: Props) => {
       <Spacer />
       {props.sessionActive ? (
         <>
-          <Text modifiers={[font({ name: "HankenGrotesk-Medium", size: 13 }), foregroundStyle("#34D399")]}>
+          <Text modifiers={[font({ family: "HankenGrotesk-Medium", size: 13 }), foregroundStyle("#34D399")]}>
             Tap to resume
           </Text>
-          <Spacer size={4} />
           <Text
             modifiers={[
-              font({ name: "HankenGrotesk-Bold", size: 14 }),
+              font({ family: "HankenGrotesk-Bold", size: 14 }),
               foregroundStyle(props.sessionPaused ? "#8A8A94" : "#ECEAE6"),
             ]}
           >
@@ -33,16 +32,15 @@ const QuickStartWidget = (props: Props) => {
         </>
       ) : props.hasTasks ? (
         <>
-          <Text modifiers={[font({ name: "HankenGrotesk-Medium", size: 13 }), foregroundStyle("#34D399")]}>
+          <Text modifiers={[font({ family: "HankenGrotesk-Medium", size: 13 }), foregroundStyle("#34D399")]}>
             Tap to start
           </Text>
-          <Spacer size={4} />
-          <Text modifiers={[font({ name: "HankenGrotesk-Bold", size: 14 }), foregroundStyle("#ECEAE6")]}>
+          <Text modifiers={[font({ family: "HankenGrotesk-Bold", size: 14 }), foregroundStyle("#ECEAE6")]}>
             {props.nextTaskTitle}
           </Text>
         </>
       ) : (
-        <Text modifiers={[font({ name: "HankenGrotesk", size: 13 }), foregroundStyle("#8A8A94")]}>
+        <Text modifiers={[font({ family: "HankenGrotesk", size: 13 }), foregroundStyle("#8A8A94")]}>
           No tasks — tap to add one
         </Text>
       )}
