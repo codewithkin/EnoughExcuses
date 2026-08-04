@@ -2,21 +2,26 @@ import * as Notifications from "expo-notifications";
 import { Platform } from "react-native";
 
 import { COLORS } from "./theme";
+import { formatClock } from "./date";
 
 export const NOTIF_ID = {
   timerEnd: "lockedin.timer-end",
   daily: "lockedin.daily-reminder",
   streakRisk: "lockedin.streak-risk",
   taskNudge: "lockedin.task-nudge",
+  liveTimer: "lockedin.live-timer",
 };
 
 Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowBanner: true,
-    shouldShowList: true,
-    shouldPlaySound: true,
-    shouldSetBadge: false,
-  }),
+  handleNotification: async (notification) => {
+    const isLiveUpdate = notification.request.identifier === NOTIF_ID.liveTimer;
+    return {
+      shouldShowBanner: !isLiveUpdate,
+      shouldShowList: true,
+      shouldPlaySound: !isLiveUpdate,
+      shouldSetBadge: false,
+    };
+  },
 });
 
 export async function ensureNotificationSetup(): Promise<boolean> {
@@ -26,6 +31,10 @@ export async function ensureNotificationSetup(): Promise<boolean> {
       importance: Notifications.AndroidImportance.HIGH,
       vibrationPattern: [0, 200, 100, 200],
       lightColor: COLORS.coral,
+    });
+    await Notifications.setNotificationChannelAsync("live-timer", {
+      name: "Live timer",
+      importance: Notifications.AndroidImportance.LOW,
     });
   }
 
@@ -156,4 +165,32 @@ export async function scheduleRecurringTask(
   });
 }
 
-export const cancelRecurringTask = (taskId: string) => cancel(recurringTaskNotifId(taskId));
+export const hideLiveTimer = () => cancel(NOTIF_ID.liveTimer);
+
+// Shows or updates a persistent notification with the current remaining time.
+// Visible on the lock screen and in the notification center on both platforms.
+// On Android it sits in the status bar as a low-importance silent notification.
+export async function showLiveTimer(
+  remaining: number,
+  total: number,
+  taskTitle: string,
+  goalTitle?: string,
+) {
+  await cancel(NOTIF_ID.liveTimer);
+  const goalPart = goalTitle ? ` · ${goalTitle}` : "";
+  await Notifications.scheduleNotificationAsync({
+    identifier: NOTIF_ID.liveTimer,
+    content: {
+      title: `Focus · ${formatClock(remaining)}`,
+      body: `"${taskTitle}"${goalPart}`,
+      sound: false,
+      sticky: true,
+      ...(Platform.OS === "ios" ? { interruptionLevel: "passive" } : {}),
+      ...(Platform.OS === "android" ? { channelId: "live-timer" } : {}),
+    },
+    trigger: {
+      type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
+      seconds: 1,
+    },
+  });
+}
