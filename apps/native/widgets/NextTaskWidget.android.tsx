@@ -1,5 +1,7 @@
 "use no memo";
-import { FlexWidget, TextWidget } from "react-native-android-widget";
+import { TextWidget } from "react-native-android-widget";
+
+import { GlowMark, WIDGET, WidgetShell, checkSvg, flameSvg } from "./widget-style";
 
 type Props = {
   title: string;
@@ -7,62 +9,69 @@ type Props = {
   goalTitle?: string;
   sessionActive: boolean;
   sessionPaused: boolean;
+  /** @deprecated countdown removed from widgets — kept so old callers typecheck */
   remaining?: number;
 };
 
-function formatClock(seconds: number): string {
-  const m = Math.floor(Math.max(0, seconds) / 60);
-  const s = Math.max(0, seconds) % 60;
-  return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
-}
-
 export function NextTaskWidget(props: Props) {
+  const hasTask = !!props.title && props.title !== "All done!";
+  const live = props.sessionActive && !props.sessionPaused;
+
+  const status = props.sessionActive
+    ? props.sessionPaused
+      ? "PAUSED"
+      : "FOCUSING"
+    : hasTask
+      ? "NEXT TASK"
+      : "ALL CLEAR";
+
+  const meta = hasTask
+    ? [props.durationMin ? `${props.durationMin} min` : null, props.goalTitle]
+        .filter(Boolean)
+        .join("  ·  ")
+    : "Tap to add your first task";
+
   return (
-    <FlexWidget
-      clickAction="OPEN_APP"
-      style={{
-        height: "match_parent",
-        width: "match_parent",
-        flexDirection: "column",
-        justifyContent: "center",
-        backgroundColor: "#16161A",
-        borderRadius: 16,
-        padding: 14,
-      }}
+    <WidgetShell
+      accent={live}
+      mark={
+        <GlowMark
+          active={props.sessionActive}
+          svg={hasTask ? flameSvg(live ? WIDGET.green : WIDGET.muted) : checkSvg(WIDGET.green)}
+        />
+      }
     >
       <TextWidget
-        text={props.sessionActive ? (props.sessionPaused ? "Paused" : "Focusing") : "Next task"}
-        style={{ fontSize: 11, fontFamily: "JetBrainsMono-Medium", color: "#8A8A94" }}
-      />
-      <TextWidget
-        text={props.title}
+        text={status}
         style={{
-          fontSize: 15,
-          fontWeight: "bold",
-          fontFamily: "HankenGrotesk-Bold",
-          color: props.sessionActive ? "#34D399" : "#ECEAE6",
-          marginTop: 4,
+          fontSize: 12,
+          fontFamily: "JetBrainsMono-Medium",
+          color: props.sessionActive ? WIDGET.green : WIDGET.muted,
         }}
       />
-      <FlexWidget style={{ flexDirection: "row", alignItems: "center", marginTop: 2 }}>
-        {props.sessionActive && props.remaining !== undefined ? (
-          <TextWidget
-            text={formatClock(props.remaining)}
-            style={{ fontSize: 13, fontFamily: "JetBrainsMono-Medium", color: "#34D399" }}
-          />
-        ) : props.durationMin ? (
-          <TextWidget
-            text={`${props.durationMin}m`}
-            style={{ fontSize: 12, fontFamily: "JetBrainsMono-Medium", color: "#34D399" }}
-          />
-        ) : null}
-        {props.goalTitle ? (
-          <TextWidget
-            text={` · ${props.goalTitle}`}
-            style={{ fontSize: 11, fontFamily: "HankenGrotesk", color: "#8A8A94" }}
-          />
-        ) : null}
-      </FlexWidget>
-    </FlexWidget>
+
+      <TextWidget
+        text={hasTask ? props.title : "Nothing queued"}
+        maxLines={2}
+        style={{
+          fontSize: 22,
+          fontWeight: "bold",
+          fontFamily: "HankenGrotesk-Bold",
+          color: hasTask ? WIDGET.fg : WIDGET.muted,
+          marginTop: 6,
+        }}
+      />
+
+      <TextWidget
+        text={meta}
+        maxLines={1}
+        style={{
+          fontSize: 14,
+          fontFamily: "HankenGrotesk",
+          color: hasTask ? WIDGET.green : WIDGET.muted,
+          marginTop: 6,
+        }}
+      />
+    </WidgetShell>
   );
 }

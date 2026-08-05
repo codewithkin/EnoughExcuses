@@ -2,7 +2,6 @@ import * as Notifications from "expo-notifications";
 import { Platform } from "react-native";
 
 import { COLORS } from "./theme";
-import { formatClock } from "./date";
 
 export const NOTIF_ID = {
   timerEnd: "lockedin.timer-end",
@@ -15,9 +14,7 @@ export const NOTIF_ID = {
 export const CATEGORY_LIVE_TIMER = "live-timer";
 
 export const LIVE_ACTIONS = {
-  pause: "pause",
-  resume: "resume",
-  add5: "add5",
+  done: "done",
   skip: "skip",
 } as const;
 
@@ -49,18 +46,8 @@ export async function ensureNotificationSetup(): Promise<boolean> {
 
   await Notifications.setNotificationCategoryAsync(CATEGORY_LIVE_TIMER, [
     {
-      identifier: LIVE_ACTIONS.pause,
-      buttonTitle: "Pause",
-      options: { opensAppToForeground: false },
-    },
-    {
-      identifier: LIVE_ACTIONS.resume,
-      buttonTitle: "Resume",
-      options: { opensAppToForeground: false },
-    },
-    {
-      identifier: LIVE_ACTIONS.add5,
-      buttonTitle: "+5m",
+      identifier: LIVE_ACTIONS.done,
+      buttonTitle: "Done",
       options: { opensAppToForeground: false },
     },
     {
@@ -201,55 +188,48 @@ export const cancelRecurringTask = (taskId: string) => cancel(recurringTaskNotif
 
 export const hideLiveTimer = () => cancel(NOTIF_ID.liveTimer);
 
-// Sets up a listener for live timer notification actions (Pause, Resume, +5m, Skip).
+// Sets up a listener for the focus notification's Done / Skip actions.
 // Returns a cleanup function. Call inside a useEffect.
-export function onLiveTimerAction(
-  handlers: {
-    onPause: () => void;
-    onResume: () => void;
-    onAdd5: () => void;
-    onSkip: () => void;
-  },
-): () => void {
+export function onLiveTimerAction(handlers: {
+  onDone: () => void;
+  onSkip: () => void;
+}): () => void {
   const sub = Notifications.addNotificationResponseReceivedListener((response) => {
     const actionId = response.actionIdentifier;
     if (response.notification.request.identifier !== NOTIF_ID.liveTimer) return;
     if (actionId === Notifications.DEFAULT_ACTION_IDENTIFIER) return;
     switch (actionId) {
-      case LIVE_ACTIONS.pause: handlers.onPause(); break;
-      case LIVE_ACTIONS.resume: handlers.onResume(); break;
-      case LIVE_ACTIONS.add5: handlers.onAdd5(); break;
-      case LIVE_ACTIONS.skip: handlers.onSkip(); break;
+      case LIVE_ACTIONS.done:
+        handlers.onDone();
+        break;
+      case LIVE_ACTIONS.skip:
+        handlers.onSkip();
+        break;
     }
   });
   return () => sub.remove();
 }
 
-// Shows or updates a persistent notification with the current remaining time.
-// Visible on the lock screen and in the notification center on both platforms.
-// On Android it sits in the status bar as a low-importance silent notification.
-export async function showLiveTimer(
-  remaining: number,
-  total: number,
-  taskTitle: string,
-  goalTitle?: string,
-) {
+// Persistent notification naming the task currently being focused on.
+//
+// Deliberately carries no countdown: notifications can't be updated more
+// than about once a minute without the OS throttling them, so a ticking
+// clock here just reads as stale/wrong. The in-app timer is the source of
+// truth for time; this surface exists to say what you're working on and to
+// let you close it out without opening the app.
+export async function showLiveTimer(taskTitle: string, goalTitle?: string) {
   await cancel(NOTIF_ID.liveTimer);
-  const goalPart = goalTitle ? ` · ${goalTitle}` : "";
   await Notifications.scheduleNotificationAsync({
     identifier: NOTIF_ID.liveTimer,
     content: {
-      title: `Focus · ${formatClock(remaining)}`,
-      body: `"${taskTitle}"${goalPart}`,
+      title: "Focusing",
+      body: goalTitle ? `${taskTitle} · ${goalTitle}` : taskTitle,
       sound: false,
       sticky: true,
       categoryIdentifier: CATEGORY_LIVE_TIMER,
       ...(Platform.OS === "ios" ? { interruptionLevel: "passive" } : {}),
       ...(Platform.OS === "android" ? { channelId: "live-timer" } : {}),
     },
-    trigger: {
-      type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
-      seconds: 1,
-    },
+    trigger: null,
   });
 }

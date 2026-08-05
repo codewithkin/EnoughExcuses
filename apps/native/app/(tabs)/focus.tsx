@@ -20,12 +20,6 @@ import { type TimerVariantProps } from "@/components/timers/types";
 import { Body, BodyMuted, Caption, Label, Title } from "@/components/typography";
 import { nextInGoal } from "@/lib/selectors";
 import { hideLiveTimer, onLiveTimerAction, showLiveTimer } from "@/lib/notifications";
-import {
-  hideTimerControls,
-  onTimerControl,
-  showTimerControls,
-  updateTimerControls,
-} from "@/lib/music-control";
 import { stopLiveActivity, syncLiveActivity } from "@/lib/live-activity";
 import { syncAllWidgets } from "@/lib/widget-sync";
 import { playStartFocus, playTaskComplete } from "@/lib/sounds";
@@ -128,104 +122,39 @@ export default function Focus() {
     return () => sub.remove();
   }, [countdown.active, countdown.paused, pauseSession]);
 
-  // Live notification — visible on lock screen / notification center while focused.
-  const liveRef = useRef({ remaining: 0, total: 0, title: "", goalTitle: "" });
-  liveRef.current = {
-    remaining: countdown.remaining,
-    total: countdown.total,
-    title: currentTask?.title ?? "",
-    goalTitle: goal?.title ?? "",
-  };
+  // Persistent notification naming the current task. No countdown — the OS
+  // throttles notification updates, so a clock here would read stale. It only
+  // needs to re-post when the task itself changes.
   useEffect(() => {
     if (!countdown.active || !currentTask) {
       hideLiveTimer();
       return;
     }
-    showLiveTimer(liveRef.current.remaining, liveRef.current.total, liveRef.current.title, liveRef.current.goalTitle);
-    const interval = setInterval(() => {
-      const r = liveRef.current;
-      showLiveTimer(r.remaining, r.total, r.title, r.goalTitle);
-    }, 10_000);
+    showLiveTimer(currentTask.title, goal?.title);
     return () => {
-      clearInterval(interval);
       hideLiveTimer();
     };
-  }, [countdown.active, countdown.paused, currentTask?.id]);
+  }, [countdown.active, currentTask?.id, currentTask?.title, goal?.title]);
 
-  // Handle notification action buttons (Pause, Resume, +5m, Skip).
+  // Done / Skip straight from the notification, without opening the app.
   useEffect(() => {
     if (!countdown.active) return;
-    return onLiveTimerAction({
-      onPause: pauseSession,
-      onResume: resumeSession,
-      onAdd5: () => extendSession(5),
-      onSkip,
-    });
-  }, [countdown.active, pauseSession, resumeSession, extendSession, onSkip]);
+    return onLiveTimerAction({ onDone, onSkip });
+  }, [countdown.active, onDone, onSkip]);
 
-  // Lock screen media controls — shows timer and play/pause/skip/+5m on the lock screen.
-  const musicRef = useRef({ remaining: 0, total: 0, title: "", goalTitle: "" });
-  musicRef.current = {
-    remaining: countdown.remaining,
-    total: countdown.total,
-    title: currentTask?.title ?? "",
-    goalTitle: goal?.title ?? "",
-  };
-  useEffect(() => {
-    if (!countdown.active || !currentTask) {
-      hideTimerControls();
-      return;
-    }
-    showTimerControls(musicRef.current.remaining, musicRef.current.total, musicRef.current.title, musicRef.current.goalTitle);
-    const interval = setInterval(() => {
-      const r = musicRef.current;
-      updateTimerControls(r.remaining, countdown.paused);
-    }, 10_000);
-    return () => {
-      clearInterval(interval);
-      hideTimerControls();
-    };
-  }, [countdown.active, currentTask?.id]);
-
-  // Handle lock screen media control commands (Play, Pause, Skip, +5m).
-  useEffect(() => {
-    if (!countdown.active) return;
-    return onTimerControl({
-      onPlay: resumeSession,
-      onPause: pauseSession,
-      onSkipForward: () => extendSession(5),
-      onNextTrack: onSkip,
-    });
-  }, [countdown.active, resumeSession, pauseSession, extendSession, onSkip]);
-
-  // Live Activity — Dynamic Island + Lock Screen banner (iOS only, no-op on Android).
-  const activityRef = useRef({ remaining: 0, total: 0, title: "", goalTitle: "" });
-  activityRef.current = {
-    remaining: countdown.remaining,
-    total: countdown.total,
-    title: currentTask?.title ?? "",
-    goalTitle: goal?.title ?? "",
-  };
+  // Live Activity — Dynamic Island + Lock Screen (iOS only, no-op on Android).
   useEffect(() => {
     if (!countdown.active || !currentTask) {
       stopLiveActivity();
       return;
     }
-    const sync = () => {
-      const a = activityRef.current;
-      syncLiveActivity({
-        taskId: currentTask.id,
-        taskTitle: a.title,
-        goalTitle: a.goalTitle,
-        remaining: a.remaining,
-        total: a.total,
-        paused: countdown.paused,
-      });
-    };
-    sync();
-    const interval = setInterval(sync, 10_000);
-    return () => clearInterval(interval);
-  }, [countdown.active, countdown.paused, currentTask?.id]);
+    syncLiveActivity({
+      taskId: currentTask.id,
+      taskTitle: currentTask.title,
+      goalTitle: goal?.title,
+      paused: countdown.paused,
+    });
+  }, [countdown.active, countdown.paused, currentTask?.id, currentTask?.title, goal?.title]);
 
   // Android back button → show confirm dialog instead of navigating away.
   useEffect(() => {

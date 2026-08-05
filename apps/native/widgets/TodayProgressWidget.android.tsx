@@ -3,54 +3,101 @@ import { FlexWidget, TextWidget } from "react-native-android-widget";
 
 import { formatDurationShort } from "@/lib/widget-data";
 
+import { GlowMark, WIDGET, WidgetShell, flameSvg } from "./widget-style";
+
 type Props = { completed: number; totalPending: number; streak: number; focusSeconds: number };
+
+function Stat({
+  value,
+  label,
+  highlight = false,
+}: {
+  value: string;
+  label: string;
+  highlight?: boolean;
+}) {
+  return (
+    <FlexWidget style={{ flexDirection: "column", alignItems: "flex-start", flex: 1 }}>
+      <TextWidget
+        text={value}
+        maxLines={1}
+        style={{
+          fontSize: 26,
+          fontWeight: "bold",
+          fontFamily: "HankenGrotesk-Bold",
+          color: highlight ? WIDGET.green : WIDGET.fg,
+        }}
+      />
+      <TextWidget
+        text={label}
+        maxLines={1}
+        style={{
+          fontSize: 13,
+          fontFamily: "HankenGrotesk",
+          color: WIDGET.muted,
+          marginTop: 2,
+        }}
+      />
+    </FlexWidget>
+  );
+}
 
 export function TodayProgressWidget(props: Props) {
   const total = props.completed + props.totalPending;
+  const allDone = total > 0 && props.totalPending === 0;
+  const nothingYet = total === 0;
+
   return (
-    <FlexWidget
-      clickAction="OPEN_APP"
-      style={{
-        height: "match_parent",
-        width: "match_parent",
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-evenly",
-        backgroundColor: "#16161A",
-        borderRadius: 16,
-        padding: 14,
-      }}
+    <WidgetShell
+      accent={props.completed > 0}
+      mark={
+        <GlowMark
+          active={props.streak > 0}
+          svg={flameSvg(props.streak > 0 ? WIDGET.green : WIDGET.muted)}
+        />
+      }
     >
-      <FlexWidget style={{ flexDirection: "column", alignItems: "center" }}>
+      <TextWidget
+        text={
+          nothingYet
+            ? "NO TASKS YET"
+            : allDone
+              ? "TODAY · DONE"
+              : "TODAY"
+        }
+        style={{
+          fontSize: 12,
+          fontFamily: "JetBrainsMono-Medium",
+          color: allDone ? WIDGET.green : WIDGET.muted,
+        }}
+      />
+
+      {nothingYet ? (
         <TextWidget
-          text={String(props.completed)}
-          style={{ fontSize: 20, fontWeight: "bold", fontFamily: "HankenGrotesk-Bold", color: "#34D399" }}
+          text="Add a task to get going"
+          maxLines={2}
+          style={{
+            fontSize: 20,
+            fontWeight: "bold",
+            fontFamily: "HankenGrotesk-Bold",
+            color: WIDGET.muted,
+            marginTop: 8,
+          }}
         />
-        <TextWidget
-          text={`of ${total} done`}
-          style={{ fontSize: 11, fontFamily: "HankenGrotesk", color: "#8A8A94", marginTop: 2 }}
-        />
-      </FlexWidget>
-      <FlexWidget style={{ flexDirection: "column", alignItems: "center" }}>
-        <TextWidget
-          text={String(props.streak)}
-          style={{ fontSize: 20, fontWeight: "bold", fontFamily: "HankenGrotesk-Bold", color: "#ECEAE6" }}
-        />
-        <TextWidget
-          text="day streak"
-          style={{ fontSize: 11, fontFamily: "HankenGrotesk", color: "#8A8A94", marginTop: 2 }}
-        />
-      </FlexWidget>
-      <FlexWidget style={{ flexDirection: "column", alignItems: "center" }}>
-        <TextWidget
-          text={formatDurationShort(props.focusSeconds)}
-          style={{ fontSize: 16, fontFamily: "JetBrainsMono-Medium", color: "#ECEAE6" }}
-        />
-        <TextWidget
-          text="focused"
-          style={{ fontSize: 11, fontFamily: "HankenGrotesk", color: "#8A8A94", marginTop: 2 }}
-        />
-      </FlexWidget>
-    </FlexWidget>
+      ) : (
+        <FlexWidget style={{ flexDirection: "row", width: "match_parent", marginTop: 10 }}>
+          <Stat
+            value={`${props.completed}/${total}`}
+            label={props.completed === 1 ? "task done" : "tasks done"}
+            highlight
+          />
+          <Stat
+            value={String(props.streak)}
+            label={props.streak === 1 ? "day streak" : "day streak"}
+          />
+          <Stat value={formatDurationShort(props.focusSeconds)} label="focused" />
+        </FlexWidget>
+      )}
+    </WidgetShell>
   );
 }

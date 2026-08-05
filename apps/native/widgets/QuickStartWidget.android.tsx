@@ -1,5 +1,7 @@
 "use no memo";
-import { FlexWidget, TextWidget } from "react-native-android-widget";
+import { TextWidget } from "react-native-android-widget";
+
+import { GlowMark, WIDGET, WidgetShell, boltSvg, flameSvg } from "./widget-style";
 
 type Props = {
   hasTasks: boolean;
@@ -10,60 +12,75 @@ type Props = {
 };
 
 export function QuickStartWidget(props: Props) {
+  const live = props.sessionActive && !props.sessionPaused;
+
+  const cta = props.sessionActive
+    ? props.sessionPaused
+      ? "TAP TO RESUME"
+      : "IN PROGRESS"
+    : props.hasTasks
+      ? "TAP TO START"
+      : "NOTHING QUEUED";
+
+  const title = props.sessionActive
+    ? (props.sessionTaskTitle ?? "")
+    : props.hasTasks
+      ? (props.nextTaskTitle ?? "")
+      : "Add a task";
+
+  const sub = props.sessionActive
+    ? props.sessionPaused
+      ? "Paused — pick it back up"
+      : "Keep going"
+    : props.hasTasks
+      ? "One task. No excuses."
+      : "Tap to line one up";
+
   return (
-    <FlexWidget
-      clickAction="OPEN_APP"
-      style={{
-        height: "match_parent",
-        width: "match_parent",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "#16161A",
-        borderRadius: 16,
-        padding: 14,
-      }}
-    >
-      {props.sessionActive ? (
-        <>
-          <TextWidget
-            text="Tap to resume"
-            style={{ fontSize: 13, fontFamily: "HankenGrotesk-Medium", color: "#34D399" }}
-          />
-          <TextWidget
-            text={props.sessionPaused ? `Paused · ${props.sessionTaskTitle ?? ""}` : props.sessionTaskTitle ?? ""}
-            style={{
-              fontSize: 14,
-              fontWeight: "bold",
-              fontFamily: "HankenGrotesk-Bold",
-              color: props.sessionPaused ? "#8A8A94" : "#ECEAE6",
-              marginTop: 4,
-            }}
-          />
-        </>
-      ) : props.hasTasks ? (
-        <>
-          <TextWidget
-            text="Tap to start"
-            style={{ fontSize: 13, fontFamily: "HankenGrotesk-Medium", color: "#34D399" }}
-          />
-          <TextWidget
-            text={props.nextTaskTitle ?? ""}
-            style={{
-              fontSize: 14,
-              fontWeight: "bold",
-              fontFamily: "HankenGrotesk-Bold",
-              color: "#ECEAE6",
-              marginTop: 4,
-            }}
-          />
-        </>
-      ) : (
-        <TextWidget
-          text="No tasks — tap to add one"
-          style={{ fontSize: 13, fontFamily: "HankenGrotesk", color: "#8A8A94" }}
+    <WidgetShell
+      accent={live}
+      mark={
+        <GlowMark
+          active={props.sessionActive || props.hasTasks}
+          svg={
+            props.sessionActive
+              ? flameSvg(live ? WIDGET.green : WIDGET.muted)
+              : boltSvg(props.hasTasks ? WIDGET.green : WIDGET.muted)
+          }
         />
-      )}
-    </FlexWidget>
+      }
+    >
+      <TextWidget
+        text={cta}
+        style={{
+          fontSize: 12,
+          fontFamily: "JetBrainsMono-Medium",
+          color: props.hasTasks || props.sessionActive ? WIDGET.green : WIDGET.muted,
+        }}
+      />
+
+      <TextWidget
+        text={title}
+        maxLines={2}
+        style={{
+          fontSize: 22,
+          fontWeight: "bold",
+          fontFamily: "HankenGrotesk-Bold",
+          color: props.hasTasks || props.sessionActive ? WIDGET.fg : WIDGET.muted,
+          marginTop: 6,
+        }}
+      />
+
+      <TextWidget
+        text={sub}
+        maxLines={1}
+        style={{
+          fontSize: 14,
+          fontFamily: "HankenGrotesk",
+          color: WIDGET.muted,
+          marginTop: 6,
+        }}
+      />
+    </WidgetShell>
   );
 }

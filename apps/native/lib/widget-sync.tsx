@@ -29,7 +29,6 @@ async function updateIOSWidgets(data: WidgetData) {
       goalTitle: data.nextTask?.goalTitle,
       sessionActive: data.session.active,
       sessionPaused: data.session.paused,
-      remaining: data.session.remaining,
     });
 
     QuickStartWidget.updateSnapshot({
@@ -50,8 +49,6 @@ async function updateIOSWidgets(data: WidgetData) {
     FocusTimerLockScreen.updateSnapshot({
       active: data.session.active,
       paused: data.session.paused,
-      remaining: data.session.remaining,
-      total: data.session.total,
     });
   } catch {
     // Widgets not registered yet — ignore
@@ -69,7 +66,6 @@ async function updateAndroidWidgets(data: WidgetData) {
           goalTitle={data.nextTask?.goalTitle}
           sessionActive={data.session.active}
           sessionPaused={data.session.paused}
-          remaining={data.session.remaining}
         />
       ),
     });

@@ -9,18 +9,17 @@ let activeHandle: LiveActivityHandle | null = null;
 let activeTaskId: string | null = null;
 
 /**
- * Starts (or, if one is already running for this task, just updates) the
- * focus-session Live Activity. Safe to call on every timer tick — it only
- * spins up a *new* activity when the task id changes; otherwise it just
- * pushes updated props to the existing one, so pausing/resuming never
- * flickers or recreates the Dynamic Island entry.
+ * Starts (or updates, if one is already running for this task) the focus
+ * Live Activity. Keyed on task id so pausing/resuming updates the existing
+ * activity rather than tearing it down and creating a new one.
+ *
+ * Carries no countdown — see the note in lib/notifications.ts. The activity
+ * names what you're focused on; the app owns the clock.
  */
 export function syncLiveActivity(params: {
   taskId: string;
   taskTitle: string;
   goalTitle?: string;
-  remaining: number;
-  total: number;
   paused: boolean;
 }) {
   if (Platform.OS !== "ios") return;
@@ -29,8 +28,6 @@ export function syncLiveActivity(params: {
     const props: FocusTimerActivityProps = {
       taskTitle: params.taskTitle,
       goalTitle: params.goalTitle,
-      remaining: params.remaining,
-      total: params.total,
       paused: params.paused,
     };
 
@@ -43,7 +40,7 @@ export function syncLiveActivity(params: {
 
     activeHandle.update(props).catch(() => {});
   } catch {
-    // Live Activities not available (older iOS, simulator limitation, etc.) — ignore
+    // Live Activities not available (older iOS, simulator limitation, etc.)
   }
 }
 

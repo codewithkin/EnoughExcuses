@@ -1,38 +1,25 @@
-import { Text, VStack, ZStack } from "@expo/ui/swift-ui";
-import { font, foregroundStyle } from "@expo/ui/swift-ui/modifiers";
+import { Image, VStack } from "@expo/ui/swift-ui";
 import { createWidget } from "expo-widgets";
 
 type Props = {
   active: boolean;
   paused: boolean;
-  remaining: number;
-  total: number;
 };
 
-function formatClock(seconds: number): string {
-  const m = Math.floor(Math.max(0, seconds) / 60);
-  const s = Math.max(0, seconds) % 60;
-  return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
-}
-
+// Lock Screen circular accessory. Carries no countdown by design — accessory
+// widgets refresh on the system's schedule (minutes apart), so a clock here
+// would read stale. It's a glanceable "session running / not running" mark.
 const FocusTimerLockScreen = (props: Props) => {
   "widget";
-  const accent = props.paused ? "#8A8A94" : "#34D399";
+  const accent = props.active ? (props.paused ? "#8A8A94" : "#34D399") : "#8A8A94";
 
   return (
-    <ZStack>
-      <VStack>
-        {props.active ? (
-          <Text modifiers={[font({ family: "JetBrainsMono-Medium", size: 13 }), foregroundStyle(accent)]}>
-            {formatClock(props.remaining)}
-          </Text>
-        ) : (
-          <Text modifiers={[font({ family: "HankenGrotesk-Bold", size: 12 }), foregroundStyle("#8A8A94")]}>
-            —
-          </Text>
-        )}
-      </VStack>
-    </ZStack>
+    <VStack>
+      <Image
+        systemName={props.active ? (props.paused ? "pause.circle.fill" : "flame.fill") : "flame"}
+        color={accent}
+      />
+    </VStack>
   );
 };
 

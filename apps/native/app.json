@@ -103,10 +103,11 @@
             {
               "name": "NextTaskWidget",
               "label": "Next Task",
-              "minWidth": "250dp",
-              "minHeight": "110dp",
-              "targetCellWidth": 4,
+              "minWidth": "320dp",
+              "minHeight": "120dp",
+              "targetCellWidth": 5,
               "targetCellHeight": 2,
+              "resizeMode": "horizontal|vertical",
               "description": "Your next task or current focus",
               "updatePeriodMillis": 1800000
             },
@@ -117,16 +118,18 @@
               "minHeight": "120dp",
               "targetCellWidth": 5,
               "targetCellHeight": 2,
+              "resizeMode": "horizontal|vertical",
               "description": "Today's stats at a glance",
               "updatePeriodMillis": 1800000
             },
             {
               "name": "QuickStartWidget",
               "label": "Quick Start",
-              "minWidth": "250dp",
-              "minHeight": "110dp",
-              "targetCellWidth": 4,
+              "minWidth": "320dp",
+              "minHeight": "120dp",
+              "targetCellWidth": 5,
               "targetCellHeight": 2,
+              "resizeMode": "horizontal|vertical",
               "description": "One tap to start",
               "updatePeriodMillis": 1800000
             }

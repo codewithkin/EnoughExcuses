@@ -39,7 +39,6 @@ export async function widgetTaskHandler(props: WidgetTaskHandlerProps) {
           goalTitle={data.nextTask?.goalTitle}
           sessionActive={data.session.active}
           sessionPaused={data.session.paused}
-          remaining={data.session.remaining}
         />,
       );
       break;

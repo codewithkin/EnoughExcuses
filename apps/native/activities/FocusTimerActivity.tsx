@@ -1,79 +1,82 @@
-import { HStack, Image, Text, VStack } from "@expo/ui/swift-ui";
+import { HStack, Image, Spacer, Text, VStack } from "@expo/ui/swift-ui";
 import { font, foregroundStyle, padding } from "@expo/ui/swift-ui/modifiers";
 import { createLiveActivity } from "expo-widgets";
 
 export type FocusTimerActivityProps = {
   taskTitle: string;
   goalTitle?: string;
-  remaining: number;
-  total: number;
   paused: boolean;
 };
 
-function formatClock(seconds: number): string {
-  const m = Math.floor(Math.max(0, seconds) / 60);
-  const s = Math.max(0, seconds) % 60;
-  return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
-}
+const GREEN = "#34D399";
+const MUTED = "#8A8A94";
+const FG = "#ECEAE6";
 
 const FocusTimerActivity = (props: FocusTimerActivityProps) => {
   "widget";
-  const accent = props.paused ? "#8A8A94" : "#34D399";
+  const accent = props.paused ? MUTED : GREEN;
+  const status = props.paused ? "Paused" : "Focusing";
 
   return {
     banner: (
       <HStack modifiers={[padding({ all: 14 })]}>
         <VStack>
-          <Text modifiers={[font({ family: "HankenGrotesk-Bold", size: 15 }), foregroundStyle("#ECEAE6")]}>
+          <Text
+            modifiers={[font({ family: "JetBrainsMono-Medium", size: 11 }), foregroundStyle(accent)]}
+          >
+            {status.toUpperCase()}
+          </Text>
+          <Text
+            modifiers={[font({ family: "HankenGrotesk-Bold", size: 17 }), foregroundStyle(FG)]}
+          >
             {props.taskTitle}
           </Text>
-          <Text modifiers={[font({ family: "HankenGrotesk", size: 12 }), foregroundStyle("#8A8A94")]}>
-            {props.paused ? "Paused" : (props.goalTitle ?? "Focus")}
-          </Text>
+          {props.goalTitle ? (
+            <Text
+              modifiers={[font({ family: "HankenGrotesk", size: 12 }), foregroundStyle(MUTED)]}
+            >
+              {props.goalTitle}
+            </Text>
+          ) : null}
         </VStack>
-        <Text modifiers={[font({ family: "JetBrainsMono-Medium", size: 20 }), foregroundStyle(accent)]}>
-          {formatClock(props.remaining)}
-        </Text>
+        <Spacer />
+        <Image systemName={props.paused ? "pause.circle.fill" : "flame.fill"} color={accent} />
       </HStack>
     ),
 
-    compactLeading: <Image systemName={props.paused ? "pause.circle.fill" : "timer"} color={accent} />,
+    compactLeading: (
+      <Image systemName={props.paused ? "pause.circle.fill" : "flame.fill"} color={accent} />
+    ),
     compactTrailing: (
-      <Text modifiers={[font({ family: "JetBrainsMono-Medium", size: 13 }), foregroundStyle(accent)]}>
-        {formatClock(props.remaining)}
+      <Text modifiers={[font({ family: "HankenGrotesk-Medium", size: 13 }), foregroundStyle(accent)]}>
+        {props.taskTitle}
       </Text>
     ),
 
-    minimal: <Image systemName={props.paused ? "pause.circle.fill" : "timer"} color={accent} />,
+    minimal: <Image systemName={props.paused ? "pause.circle.fill" : "flame.fill"} color={accent} />,
 
     expandedLeading: (
       <VStack modifiers={[padding({ all: 12 })]}>
-        <Image systemName={props.paused ? "pause.circle.fill" : "timer"} color={accent} />
-        <Text modifiers={[font({ family: "HankenGrotesk", size: 12 }), foregroundStyle("#8A8A94")]}>
-          {props.paused ? "Paused" : "Focus"}
+        <Image systemName={props.paused ? "pause.circle.fill" : "flame.fill"} color={accent} />
+        <Text modifiers={[font({ family: "HankenGrotesk", size: 12 }), foregroundStyle(MUTED)]}>
+          {status}
         </Text>
       </VStack>
     ),
     expandedTrailing: (
       <VStack modifiers={[padding({ all: 12 })]}>
-        <Text modifiers={[font({ family: "HankenGrotesk-Bold", size: 22 }), foregroundStyle(accent)]}>
-          {formatClock(props.remaining)}
-        </Text>
-        <Text modifiers={[font({ family: "HankenGrotesk", size: 11 }), foregroundStyle("#8A8A94")]}>
-          remaining
-        </Text>
+        {props.goalTitle ? (
+          <Text modifiers={[font({ family: "HankenGrotesk", size: 12 }), foregroundStyle(MUTED)]}>
+            {props.goalTitle}
+          </Text>
+        ) : null}
       </VStack>
     ),
     expandedBottom: (
       <VStack modifiers={[padding({ all: 12 })]}>
-        <Text modifiers={[font({ family: "HankenGrotesk-Bold", size: 14 }), foregroundStyle("#ECEAE6")]}>
+        <Text modifiers={[font({ family: "HankenGrotesk-Bold", size: 18 }), foregroundStyle(FG)]}>
           {props.taskTitle}
         </Text>
-        {props.goalTitle ? (
-          <Text modifiers={[font({ family: "HankenGrotesk", size: 11 }), foregroundStyle("#8A8A94")]}>
-            {props.goalTitle}
-          </Text>
-        ) : null}
       </VStack>
     ),
   };
