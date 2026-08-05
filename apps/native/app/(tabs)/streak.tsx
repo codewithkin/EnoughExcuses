@@ -7,7 +7,7 @@ import { EmptyState } from "@/components/empty-state";
 import { AnimatedRow, Card, SectionLabel } from "@/components/primitives";
 import { Screen, ScreenHeader } from "@/components/screen";
 import { Body, BodyMuted, BodyStrong, Caption, Timer, Title } from "@/components/typography";
-import { dayKey, enumerateDays, formatDuration } from "@/lib/date";
+import { dayKey, enumerateDays, formatDayLabel, formatDuration } from "@/lib/date";
 import { PAYMENTS_ENABLED, usePurchases } from "@/lib/purchases";
 import { useApp } from "@/lib/store";
 import { type DayRecord } from "@/lib/types";
@@ -127,7 +127,6 @@ export default function Streak() {
           <View style={{ gap: 8 }}>
             {historyRows.map((h, i) => {
               const kept = h.completed > 0;
-              const isToday = h.date === todayKey;
               return (
                 <AnimatedRow key={h.date} index={Math.min(i, 8)}>
                   <View
@@ -150,7 +149,7 @@ export default function Streak() {
                       }}
                     />
                     <Body style={{ flex: 1, fontSize: 15 }} color={kept ? COLORS.fg : COLORS.subtle}>
-                      {isToday ? "Today" : h.date}
+                      {formatDayLabel(h.date)}
                     </Body>
                     <Caption>
                       {kept ? `${h.completed} done · ${formatDuration(h.focusSeconds)}` : "missed"}

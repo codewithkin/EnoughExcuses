@@ -42,6 +42,50 @@ export function formatDateLabel(d: Date = new Date()): string {
   return `${MONTHS[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
 }
 
+const WEEKDAYS_FULL = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+];
+
+const MONTHS_FULL = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+
+/**
+ * Human-friendly label for a `dayKey` string (e.g. "2026-12-01").
+ *
+ * Today       → "Today"
+ * Yesterday   → "Yesterday"
+ * This year   → "Monday, 12 June"
+ * Older       → "Monday, 12 June 2025"
+ */
+export function formatDayLabel(key: string): string {
+  if (key === dayKey()) return "Today";
+  if (isYesterday(key)) return "Yesterday";
+
+  const d = new Date(`${key}T00:00:00`);
+  if (Number.isNaN(d.getTime())) return key;
+
+  const base = `${WEEKDAYS_FULL[d.getDay()]}, ${d.getDate()} ${MONTHS_FULL[d.getMonth()]}`;
+  return d.getFullYear() === new Date().getFullYear() ? base : `${base} ${d.getFullYear()}`;
+}
+
 export function enumerateDays(fromKey: string, toKey: string): string[] {
   const out: string[] = [];
   const d = new Date(`${fromKey}T00:00:00`);
