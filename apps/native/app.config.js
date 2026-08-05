@@ -18,7 +18,9 @@ module.exports = ({ config }) => {
   return {
     ...config,
     name: `${config.name}${nameSuffix}`,
-    scheme: `${config.scheme}${variant}`,
+    // Schemes must match ^[a-z][a-z0-9+.-]*$ — EAS Update rejects the manifest
+    // otherwise, and Android's intent-filter matching is case-sensitive.
+    scheme: `${config.scheme}${variant === "development" ? "dev" : "preview"}`,
     android: {
       ...config.android,
       package: `${config.android.package}${suffix}`,

@@ -1,6 +1,6 @@
 {
   "expo": {
-    "scheme": "ExcuseLess",
+    "scheme": "excuseless",
     "userInterfaceStyle": "automatic",
     "orientation": "default",
     "platforms": ["ios", "android"],
