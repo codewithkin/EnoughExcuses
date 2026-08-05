@@ -54,12 +54,60 @@ export default function Focus() {
   const [nextUp, setNextUp] = useState<Task | null>(null);
   const [showExitConfirm, setShowExitConfirm] = useState(false);
 
+  // ─────────────────────────────────────────────────────────────────────
+  // NOTE: every hook must stay above the early returns further down.
+  // React requires the same hooks to run in the same order on every
+  // render — putting a hook after `if (!currentTask) return ...` makes it
+  // conditional and throws "Rendered more hooks than during the previous
+  // render" the moment the task state changes.
+  // ─────────────────────────────────────────────────────────────────────
+
+  const goal = currentTask ? state.goals.find((g) => g.id === currentTask.goalId) : undefined;
+  const elapsed = countdown.active ? countdown.elapsed : 0;
+
+  const onDone = useCallback(() => {
+    if (!currentTask) return;
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    playTaskComplete();
+    const wasFirstToday = today.completed === 0;
+    const wasLastInQueue = queue.length === 1;
+    const nxt = nextInGoal(state.tasks, currentTask.goalId, currentTask.id);
+    completeTask(currentTask.id, elapsed);
+    syncAllWidgets();
+    if (wasFirstToday) router.push("/first-win");
+    else if (wasLastInQueue) router.push("/day-summary");
+    else if (nxt) setNextUp(nxt);
+  }, [currentTask, today.completed, queue.length, state.tasks, elapsed, completeTask, router]);
+
+  const onSkip = useCallback(() => {
+    if (!currentTask) return;
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    const wasLastInQueue = queue.length === 1;
+    skipTask(currentTask.id);
+    syncAllWidgets();
+    if (wasLastInQueue) router.push("/day-summary");
+  }, [currentTask, queue.length, skipTask, router]);
+
+  const togglePause = useCallback(() => {
+    Haptics.selectionAsync();
+    if (countdown.paused) resumeSession();
+    else pauseSession();
+  }, [countdown.paused, resumeSession, pauseSession]);
+
+  const addTime = useCallback(
+    (minutes: number) => {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      extendSession(minutes);
+    },
+    [extendSession],
+  );
+
   // Keep the screen awake only while a session is actually running (not paused).
   useFocusEffect(
     useCallback(() => {
       if (!countdown.active || countdown.paused) return;
-      activateKeepAwakeAsync("lockedin-focus");
-      return () => deactivateKeepAwake("lockedin-focus");
+      activateKeepAwakeAsync("excuseless-focus");
+      return () => deactivateKeepAwake("excuseless-focus");
     }, [countdown.active, countdown.paused]),
   );
 
@@ -70,66 +118,6 @@ export default function Focus() {
     if (id && prevTaskId.current !== null && prevTaskId.current !== id) playStartFocus();
     prevTaskId.current = id;
   }, [currentTask?.id]);
-
-  // Just finished a task → confirm what's next.
-  if (nextUp) {
-    const goal = state.goals.find((g) => g.id === nextUp.goalId);
-    return (
-      <NextUpConfirm
-        task={nextUp}
-        goalTitle={goal?.title}
-        onStart={() => {
-          setActiveTask(nextUp.id);
-          setNextUp(null);
-        }}
-        onPickAnother={() => setNextUp(null)}
-      />
-    );
-  }
-
-  // No active task → the goal-grouped chooser.
-  if (!currentTask) {
-    return <FocusChooser onPick={(id) => setActiveTask(id)} />;
-  }
-
-  const goal = state.goals.find((g) => g.id === currentTask.goalId);
-  const total = countdown.active ? countdown.total : currentTask.durationMin * 60;
-  const remaining = countdown.active ? countdown.remaining : total;
-  const elapsed = countdown.active ? countdown.elapsed : 0;
-  const timeUp = countdown.active && remaining === 0;
-  const next = nextInGoal(state.tasks, currentTask.goalId, currentTask.id);
-
-  function onDone() {
-    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-    playTaskComplete();
-    const wasFirstToday = today.completed === 0;
-    const wasLastInQueue = queue.length === 1;
-    const nxt = nextInGoal(state.tasks, currentTask!.goalId, currentTask!.id);
-    completeTask(currentTask!.id, elapsed);
-    syncAllWidgets();
-    if (wasFirstToday) router.push("/first-win");
-    else if (wasLastInQueue) router.push("/day-summary");
-    else if (nxt) setNextUp(nxt);
-  }
-
-  function onSkip() {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    const wasLastInQueue = queue.length === 1;
-    skipTask(currentTask!.id);
-    syncAllWidgets();
-    if (wasLastInQueue) router.push("/day-summary");
-  }
-
-  function togglePause() {
-    Haptics.selectionAsync();
-    if (countdown.paused) resumeSession();
-    else pauseSession();
-  }
-
-  function addTime(minutes: number) {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    extendSession(minutes);
-  }
 
   // Auto-pause when the app goes to background.
   useEffect(() => {
@@ -249,6 +237,34 @@ export default function Focus() {
     const handler = BackHandler.addEventListener("hardwareBackPress", onBack);
     return () => handler.remove();
   }, [countdown.active]);
+
+  // ── All hooks are above this line. Early returns are safe from here. ──
+
+  // Just finished a task → confirm what's next.
+  if (nextUp) {
+    const nextUpGoal = state.goals.find((g) => g.id === nextUp.goalId);
+    return (
+      <NextUpConfirm
+        task={nextUp}
+        goalTitle={nextUpGoal?.title}
+        onStart={() => {
+          setActiveTask(nextUp.id);
+          setNextUp(null);
+        }}
+        onPickAnother={() => setNextUp(null)}
+      />
+    );
+  }
+
+  // No active task → the goal-grouped chooser.
+  if (!currentTask) {
+    return <FocusChooser onPick={(id) => setActiveTask(id)} />;
+  }
+
+  const total = countdown.active ? countdown.total : currentTask.durationMin * 60;
+  const remaining = countdown.active ? countdown.remaining : total;
+  const timeUp = countdown.active && remaining === 0;
+  const next = nextInGoal(state.tasks, currentTask.goalId, currentTask.id);
 
   const variantProps: TimerVariantProps = {
     taskTitle: currentTask.title,
