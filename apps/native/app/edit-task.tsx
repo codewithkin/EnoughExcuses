@@ -52,10 +52,6 @@ export default function EditTask() {
     router.back();
   }
 
-  function bump(min: number) {
-    setDuration((d) => Math.min(180, d + min));
-  }
-
   return (
     <ModalScreen title="Edit task">
       <View style={{ flex: 1, padding: 24 }}>
@@ -82,10 +78,6 @@ export default function EditTask() {
           <Caption style={{ fontFamily: FONTS.monoMedium }}>{duration} min</Caption>
         </View>
         <DurationPicker value={duration} onChange={setDuration} />
-        <View style={{ flexDirection: "row", gap: 10, marginTop: 10 }}>
-          <Bump label="+5 min" onPress={() => bump(5)} />
-          <Bump label="+15 min" onPress={() => bump(15)} />
-        </View>
 
         <View style={{ marginTop: 24 }}>
           <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
@@ -182,21 +174,3 @@ export default function EditTask() {
   );
 }
 
-function Bump({ label, onPress }: { label: string; onPress: () => void }) {
-  return (
-    <Pressable
-      onPress={onPress}
-      style={({ pressed }) => ({
-        flex: 1,
-        alignItems: "center",
-        borderRadius: RADIUS.md,
-        borderWidth: 1,
-        borderColor: COLORS.line,
-        paddingVertical: 12,
-        opacity: pressed ? 0.6 : 1,
-      })}
-    >
-      <Caption style={{ fontFamily: FONTS.monoMedium, fontSize: 13 }}>{label}</Caption>
-    </Pressable>
-  );
-}

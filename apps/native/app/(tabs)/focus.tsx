@@ -2,7 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import type BottomSheet from "@gorhom/bottom-sheet";
 import * as Haptics from "expo-haptics";
 import { activateKeepAwakeAsync, deactivateKeepAwake } from "expo-keep-awake";
-import { useFocusEffect, useRouter } from "expo-router";
+import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import { Dialog } from "heroui-native";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AppState, BackHandler, Pressable, View } from "react-native";
@@ -104,6 +104,22 @@ export default function Focus() {
       return () => deactivateKeepAwake("excuseless-focus");
     }, [countdown.active, countdown.paused]),
   );
+
+  // Deep link from the "Coming up" widget: excuseless://focus?start=<taskId>
+  // Starts that task directly so the widget's tap lands you mid-session
+  // rather than on the chooser.
+  const { start: startTaskId } = useLocalSearchParams<{ start?: string }>();
+  const handledStartRef = useRef<string | null>(null);
+  useEffect(() => {
+    if (!startTaskId || handledStartRef.current === startTaskId) return;
+    handledStartRef.current = startTaskId;
+    const target = state.tasks.find((t) => t.id === startTaskId && t.status === "pending");
+    if (target) {
+      setActiveTask(target.id);
+      syncAllWidgets();
+    }
+    router.setParams({ start: undefined });
+  }, [startTaskId, state.tasks, setActiveTask, router]);
 
   // Start chime when a new task becomes active.
   const prevTaskId = useRef<string | null>(null);

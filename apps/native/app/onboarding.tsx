@@ -438,24 +438,30 @@ const whyCard = {
   padding: 18,
 } as const;
 
+// Halo and badge are both circular and concentric — the badge is centred
+// inside the halo rather than offset, so the glow reads as an even ring
+// instead of a lopsided blob poking out one corner.
+const GLOW_SIZE = 84;
+const MARK_SIZE = 58;
+
 const glowBlob = {
   position: "absolute" as const,
-  width: 92,
-  height: 92,
-  borderRadius: 46,
+  width: GLOW_SIZE,
+  height: GLOW_SIZE,
+  borderRadius: GLOW_SIZE / 2,
   backgroundColor: COLORS.green,
-  opacity: 0.16,
-  top: -12,
-  left: -12,
+  opacity: 0.12,
+  top: -(GLOW_SIZE - MARK_SIZE) / 2,
+  left: -(GLOW_SIZE - MARK_SIZE) / 2,
 } as const;
 
 const glowMark = {
-  width: 58,
-  height: 58,
-  borderRadius: RADIUS.lg,
+  width: MARK_SIZE,
+  height: MARK_SIZE,
+  borderRadius: MARK_SIZE / 2,
   borderWidth: 1,
-  borderColor: COLORS.line,
-  backgroundColor: COLORS.elevated,
+  borderColor: "rgba(52,211,153,0.35)",
+  backgroundColor: "rgba(52,211,153,0.10)",
   alignItems: "center" as const,
   justifyContent: "center" as const,
 } as const;

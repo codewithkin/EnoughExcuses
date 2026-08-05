@@ -5,7 +5,7 @@ import { NextTaskWidget } from "@/widgets/NextTaskWidget.android";
 import { QuickStartWidget } from "@/widgets/QuickStartWidget.android";
 import { TodayProgressWidget } from "@/widgets/TodayProgressWidget.android";
 
-import { WidgetData, syncWidgetData as syncData } from "./widget-data";
+import { WidgetData, buildStartUri, syncWidgetData as syncData } from "./widget-data";
 
 export async function syncAllWidgets(): Promise<void> {
   const data = await syncData();
@@ -61,9 +61,11 @@ async function updateAndroidWidgets(data: WidgetData) {
       widgetName: "NextTaskWidget",
       renderWidget: () => (
         <NextTaskWidget
+          startUri={data.nextTask ? buildStartUri(data.nextTask.id) : undefined}
           title={data.session.active ? data.session.taskTitle : (data.nextTask?.title ?? "All done!")}
           durationMin={data.nextTask?.durationMin}
           goalTitle={data.nextTask?.goalTitle}
+          goalCount={data.activeGoalCount}
           sessionActive={data.session.active}
           sessionPaused={data.session.paused}
         />
@@ -79,6 +81,8 @@ async function updateAndroidWidgets(data: WidgetData) {
           sessionActive={data.session.active}
           sessionPaused={data.session.paused}
           sessionTaskTitle={data.session.active ? data.session.taskTitle : undefined}
+          streak={data.streak}
+          pendingCount={data.todayStats.totalPending}
         />
       ),
     });

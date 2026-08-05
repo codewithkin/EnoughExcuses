@@ -1,5 +1,5 @@
 "use no memo";
-import { FlexWidget, OverlapWidget, SvgWidget } from "react-native-android-widget";
+import { FlexWidget, OverlapWidget, SvgWidget, TextWidget } from "react-native-android-widget";
 
 // Shared design tokens + chrome for the Android home screen widgets, so all
 // three read as one family and match the in-app design system.
@@ -25,6 +25,27 @@ export const WIDGET = {
   /** #34D399 at ~12% over #16161A. */
   glowInner: "#1E332C",
 } as const;
+
+export const APP_NAME = "EXCUSELESS";
+
+/** Small wordmark for widget branding. */
+export function Wordmark({ dim = false }: { dim?: boolean }) {
+  return (
+    <TextWidget
+      text={APP_NAME}
+      style={{
+        fontSize: 9,
+        fontFamily: "JetBrainsMono-Medium",
+        color: dim ? WIDGET.line : WIDGET.muted,
+      }}
+    />
+  );
+}
+
+export const playSvg = (color: string) => `
+<svg viewBox="0 0 24 24" width="24" height="24" xmlns="http://www.w3.org/2000/svg">
+  <path fill="${color}" d="M8 5.1v13.8c0 .8.9 1.3 1.5.8l10.2-6.9c.6-.4.6-1.2 0-1.6L9.5 4.3c-.6-.5-1.5 0-1.5.8Z"/>
+</svg>`;
 
 export const flameSvg = (color: string) => `
 <svg viewBox="0 0 24 24" width="24" height="24" xmlns="http://www.w3.org/2000/svg">

@@ -1,11 +1,28 @@
 import { File, Paths } from "expo-file-system";
+import * as Linking from "expo-linking";
 import { widgetsDirectory } from "expo-widgets";
 import { Platform } from "react-native";
 
 import { loadState } from "./storage";
 
+/**
+ * Deep link that opens the app straight into a focus session for `taskId`.
+ * Built through expo-linking rather than hardcoding "excuseless://" so it
+ * stays correct for dev/preview builds, which use a suffixed scheme.
+ */
+export function buildStartUri(taskId: string): string {
+  return Linking.createURL("/focus", { queryParams: { start: taskId } });
+}
+
 export type WidgetData = {
-  nextTask: { title: string; durationMin: number; goalTitle?: string } | null;
+  nextTask: {
+    id: string;
+    title: string;
+    durationMin: number;
+    goalTitle?: string;
+  } | null;
+  /** Distinct goals with pending work, so widgets can say "across 3 goals". */
+  activeGoalCount: number;
   session: {
     active: boolean;
     paused: boolean;
@@ -34,6 +51,7 @@ function getWidgetFile(): File {
 export function emptyWidgetData(): WidgetData {
   return {
     nextTask: null,
+    activeGoalCount: 0,
     session: { active: false, paused: false, taskTitle: "", remaining: 0, total: 0 },
     todayStats: { completed: 0, skipped: 0, focusSeconds: 0, totalPending: 0 },
     streak: 0,
@@ -65,11 +83,13 @@ export async function syncWidgetData(): Promise<WidgetData> {
   const data: WidgetData = {
     nextTask: pending[0]
       ? {
+          id: pending[0].id,
           title: pending[0].title,
           durationMin: pending[0].durationMin,
           goalTitle: state.goals.find((g) => g.id === pending[0].goalId)?.title,
         }
       : null,
+    activeGoalCount: new Set(pending.map((t) => t.goalId).filter(Boolean)).size,
     session: state.session
       ? {
           active: true,

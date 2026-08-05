@@ -1,6 +1,6 @@
 import type { WidgetTaskHandlerProps } from "react-native-android-widget";
 
-import { emptyWidgetData, readWidgetData } from "@/lib/widget-data";
+import { buildStartUri, emptyWidgetData, readWidgetData } from "@/lib/widget-data";
 import { NextTaskWidget } from "@/widgets/NextTaskWidget.android";
 import { QuickStartWidget } from "@/widgets/QuickStartWidget.android";
 import { TodayProgressWidget } from "@/widgets/TodayProgressWidget.android";
@@ -32,11 +32,13 @@ export async function widgetTaskHandler(props: WidgetTaskHandlerProps) {
     case "NextTaskWidget":
       props.renderWidget(
         <NextTaskWidget
+          startUri={data.nextTask ? buildStartUri(data.nextTask.id) : undefined}
           title={
             data.session.active ? data.session.taskTitle : (data.nextTask?.title ?? "All done!")
           }
           durationMin={data.nextTask?.durationMin}
           goalTitle={data.nextTask?.goalTitle}
+          goalCount={data.activeGoalCount}
           sessionActive={data.session.active}
           sessionPaused={data.session.paused}
         />,
@@ -51,6 +53,8 @@ export async function widgetTaskHandler(props: WidgetTaskHandlerProps) {
           sessionActive={data.session.active}
           sessionPaused={data.session.paused}
           sessionTaskTitle={data.session.active ? data.session.taskTitle : undefined}
+          streak={data.streak}
+          pendingCount={data.todayStats.totalPending}
         />,
       );
       break;

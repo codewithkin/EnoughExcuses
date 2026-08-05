@@ -45,7 +45,7 @@
           "microphonePermission": false,
           "recordAudioAndroid": false,
           "enableBackgroundRecording": false,
-          "enableBackgroundPlayback": true
+          "enableBackgroundPlayback": false
         }
       ],
       "./plugins/withAndroidWorkManagerFix",
@@ -147,11 +147,7 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#000000"
       },
-      "permissions": [
-        "android.permission.MODIFY_AUDIO_SETTINGS",
-        "android.permission.FOREGROUND_SERVICE",
-        "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"
-      ]
+      "permissions": []
     },
     "ios": {
       "bundleIdentifier": "com.codewithkin.excuseless",

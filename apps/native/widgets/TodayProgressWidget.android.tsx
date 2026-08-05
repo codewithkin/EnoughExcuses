@@ -3,7 +3,7 @@ import { FlexWidget, TextWidget } from "react-native-android-widget";
 
 import { formatDurationShort } from "@/lib/widget-data";
 
-import { GlowMark, WIDGET, WidgetShell, flameSvg } from "./widget-style";
+import { GlowMark, WIDGET, WidgetShell, Wordmark, flameSvg } from "./widget-style";
 
 type Props = { completed: number; totalPending: number; streak: number; focusSeconds: number };
 
@@ -57,20 +57,18 @@ export function TodayProgressWidget(props: Props) {
         />
       }
     >
-      <TextWidget
-        text={
-          nothingYet
-            ? "NO TASKS YET"
-            : allDone
-              ? "TODAY · DONE"
-              : "TODAY"
-        }
-        style={{
-          fontSize: 12,
-          fontFamily: "JetBrainsMono-Medium",
-          color: allDone ? WIDGET.green : WIDGET.muted,
-        }}
-      />
+      <FlexWidget style={{ flexDirection: "row", alignItems: "center", width: "match_parent" }}>
+        <TextWidget
+          text={nothingYet ? "NO TASKS YET" : allDone ? "TODAY · DONE" : "TODAY"}
+          style={{
+            fontSize: 12,
+            fontFamily: "JetBrainsMono-Medium",
+            color: allDone ? WIDGET.green : WIDGET.muted,
+          }}
+        />
+        <FlexWidget style={{ flex: 1 }} />
+        <Wordmark />
+      </FlexWidget>
 
       {nothingYet ? (
         <TextWidget
