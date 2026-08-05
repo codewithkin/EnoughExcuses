@@ -1,6 +1,10 @@
 import MusicControl, { Command } from "react-native-music-control";
 import { Platform } from "react-native";
 
+// Stable, arbitrary id for the persistent focus-timer media notification.
+const LIVE_TIMER_NOTIFICATION_ID = 1001;
+const LIVE_TIMER_CHANNEL_ID = "live-timer";
+
 export function showTimerControls(
   remaining: number,
   total: number,
@@ -9,7 +13,10 @@ export function showTimerControls(
 ) {
   MusicControl.enableBackgroundMode(true);
   if (Platform.OS === "android") {
-    MusicControl.setNotificationId("live-timer", "live-timer");
+    // Native signature is (notificationId: number, channelId: string) —
+    // passing a string for the id throws "Expected argument 0 ... to be a
+    // number". The id is an arbitrary stable int; the channel is the string.
+    MusicControl.setNotificationId(LIVE_TIMER_NOTIFICATION_ID, LIVE_TIMER_CHANNEL_ID);
   }
 
   MusicControl.setNowPlaying({
