@@ -5,7 +5,7 @@ import { activateKeepAwakeAsync, deactivateKeepAwake } from "expo-keep-awake";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import { Dialog } from "heroui-native";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { AppState, BackHandler, Pressable, View } from "react-native";
+import { BackHandler, Pressable, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { GhostButton, PrimaryButton } from "@/components/buttons";
@@ -129,14 +129,13 @@ export default function Focus() {
     prevTaskId.current = id;
   }, [currentTask?.id]);
 
-  // Auto-pause when the app goes to background.
-  useEffect(() => {
-    if (!countdown.active || countdown.paused) return;
-    const sub = AppState.addEventListener("change", (nextAppState) => {
-      if (nextAppState === "background") pauseSession();
-    });
-    return () => sub.remove();
-  }, [countdown.active, countdown.paused, pauseSession]);
+  // NOTE: the session deliberately keeps running when the app is backgrounded
+  // or force-closed. `useCountdown` derives remaining time from the stored
+  // `startedAt` timestamp rather than counting ticks, so wall-clock time keeps
+  // elapsing regardless of whether the app is alive, and the "time's up"
+  // notification is scheduled with an absolute delay so it fires either way.
+  // (An earlier build auto-paused on background — that was wrong: leaving the
+  // app to do the task is the normal case for a focus timer.)
 
   // Persistent notification naming the current task. No countdown — the OS
   // throttles notification updates, so a clock here would read stale. It only
