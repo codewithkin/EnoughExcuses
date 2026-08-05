@@ -5,6 +5,6 @@ html {
 }
 
 ::selection {
-  background-color: var(--color-coral);
+  background-color: var(--color-green);
   color: #0a0a0a;
 }

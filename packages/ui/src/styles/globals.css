@@ -13,7 +13,7 @@
   --card-foreground: #eceae6;
   --popover: #16161a;
   --popover-foreground: #eceae6;
-  --primary: #ff6b4a;
+  --primary: #34d399;
   --primary-foreground: #0a0a0a;
   --secondary: #1e1e24;
   --secondary-foreground: #eceae6;
@@ -24,21 +24,21 @@
   --destructive: #e5484d;
   --border: #262630;
   --input: #262630;
-  --ring: #ff6b4a;
-  --chart-1: #ff6b4a;
-  --chart-2: #ff8a6e;
-  --chart-3: #e0512e;
+  --ring: #34d399;
+  --chart-1: #34d399;
+  --chart-2: #6ee7b7;
+  --chart-3: #059669;
   --chart-4: #8a8a94;
   --chart-5: #f4efe9;
   --radius: 0.9rem;
   --sidebar: #16161a;
   --sidebar-foreground: #eceae6;
-  --sidebar-primary: #ff6b4a;
+  --sidebar-primary: #34d399;
   --sidebar-primary-foreground: #0a0a0a;
   --sidebar-accent: #1e1e24;
   --sidebar-accent-foreground: #eceae6;
   --sidebar-border: #262630;
-  --sidebar-ring: #ff6b4a;
+  --sidebar-ring: #34d399;
 }
 
 .dark {
@@ -48,7 +48,7 @@
   --card-foreground: #eceae6;
   --popover: #16161a;
   --popover-foreground: #eceae6;
-  --primary: #ff6b4a;
+  --primary: #34d399;
   --primary-foreground: #0a0a0a;
   --secondary: #1e1e24;
   --secondary-foreground: #eceae6;
@@ -59,20 +59,20 @@
   --destructive: #e5484d;
   --border: #262630;
   --input: #262630;
-  --ring: #ff6b4a;
-  --chart-1: #ff6b4a;
-  --chart-2: #ff8a6e;
-  --chart-3: #e0512e;
+  --ring: #34d399;
+  --chart-1: #34d399;
+  --chart-2: #6ee7b7;
+  --chart-3: #059669;
   --chart-4: #8a8a94;
   --chart-5: #f4efe9;
   --sidebar: #16161a;
   --sidebar-foreground: #eceae6;
-  --sidebar-primary: #ff6b4a;
+  --sidebar-primary: #34d399;
   --sidebar-primary-foreground: #0a0a0a;
   --sidebar-accent: #1e1e24;
   --sidebar-accent-foreground: #eceae6;
   --sidebar-border: #262630;
-  --sidebar-ring: #ff6b4a;
+  --sidebar-ring: #34d399;
 }
 
 @theme inline {
@@ -86,9 +86,16 @@
   --color-fg: #eceae6;
   --color-subtle: #8a8a94;
   --color-paper: #f4efe9;
-  --color-coral: #ff6b4a;
-  --color-coral-bright: #ff8a6e;
-  --color-coral-deep: #e0512e;
+  --color-green: #34d399;
+  --color-green-bright: #6ee7b7;
+  --color-green-deep: #059669;
+
+  /* Legacy coral token names, kept as aliases pointing at the ExcuseLess
+     green so existing `text-coral` / `border-coral-deep` classNames keep
+     working. Prefer the green-* names above for anything new. */
+  --color-coral: #34d399;
+  --color-coral-bright: #6ee7b7;
+  --color-coral-deep: #059669;
 
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
