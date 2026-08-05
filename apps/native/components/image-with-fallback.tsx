@@ -1,4 +1,4 @@
-import { Ionicons } from "@expo/vector-icons";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { useState } from "react";
 import { Image, View, type ImageStyle, type StyleProp, type ViewStyle } from "react-native";
 

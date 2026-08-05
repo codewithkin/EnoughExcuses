@@ -1,4 +1,4 @@
-import { Ionicons } from "@expo/vector-icons";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { createContext, useCallback, useContext, useRef, useState } from "react";
 import { View } from "react-native";
 import Animated, { FadeInDown, FadeOutDown } from "react-native-reanimated";
