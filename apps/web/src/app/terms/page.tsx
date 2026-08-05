@@ -38,7 +38,6 @@ export default function Terms() {
             "Use the app lawfully, and don't use it to do anything illegal",
             "Don't reverse-engineer, decompile, or attempt to extract the app's source code",
             "Don't redistribute, resell, or sublicense the app",
-            "Don't attempt to circumvent purchase verification or unlock paid features without paying",
           ]}
         />
       </Section>
@@ -59,20 +58,24 @@ export default function Terms() {
         </p>
       </Section>
 
-      <Section title="Purchases">
+      <Section title="Pricing and future paid features">
         <p>
-          ExcuseLess is free to download and the core loop — goals, tasks, the timer, streaks, and
-          your daily summary — is free to use. Some features may be offered as a paid one-time
-          purchase.
+          The current version of ExcuseLess is free. There are no in-app purchases, no subscriptions,
+          and no paid tier — every feature in the app today is available to you at no cost.
         </p>
         <p>
-          All payments are processed by Google Play or the Apple App Store, not by us. Pricing and
-          currency are shown at the point of purchase and are set through those stores.
+          We may introduce paid features in a future version, which could take the form of a one-time
+          purchase, a subscription, or both. If that happens, pricing will be shown clearly before
+          you buy anything, and you will never be charged without explicitly confirming the purchase.
+          Features that are free in the current version will not be taken away and put behind a
+          paywall for existing users.
         </p>
         <p>
-          Refunds are handled entirely by whichever store you purchased through, under that
-          store&apos;s refund policy. We cannot issue refunds directly. Google Play and Apple each
-          publish their own refund windows and processes — contact them for any refund request.
+          Should paid features be introduced, all payments would be processed by Google Play or the
+          Apple App Store rather than by us, and refunds would be handled entirely by whichever store
+          you purchased through, under that store&apos;s own refund policy. We would not be able to
+          issue refunds directly. These terms will be updated with full payment details before any
+          paid feature goes live.
         </p>
       </Section>
 
@@ -93,7 +96,8 @@ export default function Terms() {
           To the fullest extent permitted by law, we are not liable for any indirect, incidental, or
           consequential damages arising from your use of the app — including lost data, lost
           productivity, or missed commitments. Where liability cannot be excluded, it is limited to
-          the amount you actually paid for the app in the twelve months before the claim.
+          the amount you actually paid for the app in the twelve months before the claim, which for
+          the current free version is zero.
         </p>
         <p>
           Nothing in these terms limits any rights you have under mandatory consumer protection law
@@ -104,7 +108,7 @@ export default function Terms() {
       <Section title="Termination">
         <p>
           You can stop using ExcuseLess at any time by uninstalling it. We may suspend access if you
-          materially breach these terms — for example by attempting to bypass purchase verification.
+          materially breach these terms.
         </p>
       </Section>
 

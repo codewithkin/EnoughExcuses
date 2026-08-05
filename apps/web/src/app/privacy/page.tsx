@@ -21,8 +21,8 @@ export default function Privacy() {
           gone.
         </p>
         <p>
-          The rest of this page explains the few narrow exceptions — anonymous app diagnostics,
-          over-the-air updates, and purchase processing — in plain terms.
+          The rest of this page explains the two narrow exceptions — anonymous app diagnostics and
+          over-the-air updates — in plain terms.
         </p>
       </Section>
 
@@ -48,7 +48,7 @@ export default function Privacy() {
 
       <Section title="What leaves your device">
         <p>
-          Three services receive limited information. None of them receive your task or goal
+          Two services receive limited information. Neither of them receives your task or goal
           content.
         </p>
         <p className="text-fg">Expo Insights (analytics)</p>
@@ -63,11 +63,12 @@ export default function Privacy() {
           The app can download bug fixes without a full store update. To check whether an update
           applies to your device, it sends your app version and platform to Expo&apos;s servers.
         </p>
-        <p className="text-fg">RevenueCat and your app store (purchases)</p>
+        <p className="text-fg">Payments</p>
         <p>
-          If you buy the paid version, the transaction is handled by Google Play or the Apple App
-          Store, and validated through RevenueCat. We never see or store your card details. We only
-          receive an anonymous identifier telling us whether a given install has an active purchase.
+          The current version of ExcuseLess is free and contains no in-app purchases, so no payment
+          data is collected or processed at all. If we introduce paid features in a future version,
+          payments would be handled by Google Play or the Apple App Store — we would never see or
+          store your card details — and this policy will be updated before that goes live.
         </p>
       </Section>
 
@@ -100,8 +101,8 @@ export default function Privacy() {
           for us to delete, and no account to close.
         </p>
         <p>
-          Purchase records are held by Google Play, Apple, and RevenueCat under their own retention
-          policies, so that you can restore a purchase on a new device.
+          Since the app is currently free with no purchases, there are no billing records associated
+          with you either.
         </p>
       </Section>
 

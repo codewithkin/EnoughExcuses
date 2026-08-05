@@ -122,29 +122,12 @@ export default function Home() {
       <section className="border-t border-line py-24">
         <Eyebrow>Pricing</Eyebrow>
         <h2 className="font-display text-3xl tracking-tight text-fg sm:text-4xl">
-          The loop is free. Forever.
+          Free. The whole thing.
         </h2>
         <p className="mt-5 max-w-2xl text-lg leading-relaxed text-subtle">
-          Tasks, the timer, the streak, your daily summary — all free, for good. Go Pro when you
-          want deeper history, themes, and sync.
+          Goals, tasks, the focus timer, streaks, your daily summary, shareable cards — everything
+          in ExcuseLess is free right now. No trial, no paywall, nothing locked behind an upgrade.
         </p>
-        <div className="mt-10 grid gap-6 sm:grid-cols-2">
-          <div className="rounded-3xl border border-line bg-card p-6">
-            <p className="font-mono text-sm uppercase tracking-wide text-subtle">Free</p>
-            <p className="mt-3 text-fg">
-              Goals &amp; tasks · Focus timer · Streak · Daily summary · Shareable cards
-            </p>
-          </div>
-          <div className="rounded-3xl border border-green-deep bg-card p-6">
-            <p className="font-mono text-sm uppercase tracking-wide text-green">Pro</p>
-            <p className="mt-3 font-display text-3xl text-fg">
-              $19.99<span className="text-base text-subtle"> one-time</span>
-            </p>
-            <p className="mt-3 text-subtle">
-              Advanced history, templates, themes, export, sync. Pay once, keep it for good.
-            </p>
-          </div>
-        </div>
       </section>
 
       {/* Final CTA */}
