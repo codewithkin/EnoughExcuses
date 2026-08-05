@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Pressable, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { CollapsibleList } from "@/components/collapsible-list";
 import { Field } from "@/components/inputs";
 import { AddRow, Card, SectionLabel } from "@/components/primitives";
 import { ProgressRing } from "@/components/progress-ring";
@@ -148,8 +149,9 @@ export default function GoalDetail() {
         {tasks.length === 0 ? (
           <BodyMuted>No tasks under this goal yet. Add one below.</BodyMuted>
         ) : (
-          <View style={{ gap: 8 }}>
-            {tasks.map((t) => {
+          <CollapsibleList
+            items={tasks}
+            renderItem={(t) => {
               if (t.status !== "pending") {
                 const done = t.status === "done";
                 return (
@@ -204,8 +206,8 @@ export default function GoalDetail() {
                   <Ionicons name="play-circle" size={24} color={COLORS.coral} />
                 </Pressable>
               );
-            })}
-          </View>
+            }}
+          />
         )}
 
         {!composer ? (

@@ -3,6 +3,7 @@ import * as Haptics from "expo-haptics";
 import { useRouter } from "expo-router";
 import { Pressable, View } from "react-native";
 
+import { CollapsibleList } from "@/components/collapsible-list";
 import { EmptyState } from "@/components/empty-state";
 import { AddRow } from "@/components/primitives";
 import { Screen, ScreenHeader } from "@/components/screen";
@@ -79,7 +80,9 @@ export default function Tasks() {
             </Pressable>
 
             <View style={{ marginTop: 10, gap: 8 }}>
-              {tasks.map((t) => {
+              <CollapsibleList
+                items={tasks}
+                renderItem={(t) => {
                 if (t.status !== "pending") {
                   const done = t.status === "done";
                   return (
@@ -153,7 +156,8 @@ export default function Tasks() {
                     )}
                   </Pressable>
                 );
-              })}
+                }}
+              />
 
               <AddRow
                 label="Add tasks"

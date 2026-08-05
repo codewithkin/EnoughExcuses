@@ -3,6 +3,7 @@ import { useRouter } from "expo-router";
 import { Pressable, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { CollapsibleList } from "@/components/collapsible-list";
 import { EmptyState } from "@/components/empty-state";
 import { BodyMuted, BodyStrong, Caption, Display, Label } from "@/components/typography";
 import { pendingByGoal } from "@/lib/selectors";
@@ -42,8 +43,10 @@ export function FocusChooser({ onPick }: { onPick: (taskId: string) => void }) {
         {groups.map((group) => (
           <View key={group.goal?.id ?? "none"} style={{ marginTop: 26 }}>
             <Label style={{ color: COLORS.coral }}>{group.goal?.title ?? "No goal"}</Label>
-            <View style={{ marginTop: 10, gap: 8 }}>
-              {group.tasks.map((t) => (
+            <View style={{ marginTop: 10 }}>
+              <CollapsibleList
+                items={group.tasks}
+                renderItem={(t) => (
                 <Pressable
                   key={t.id}
                   onPress={() => onPick(t.id)}
@@ -68,7 +71,8 @@ export function FocusChooser({ onPick }: { onPick: (taskId: string) => void }) {
                   </View>
                   <Ionicons name="play-circle" size={26} color={COLORS.coral} />
                 </Pressable>
-              ))}
+                )}
+              />
             </View>
           </View>
         ))}
