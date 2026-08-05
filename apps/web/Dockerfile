@@ -21,7 +21,12 @@ RUN corepack enable && corepack prepare pnpm@11.4.0 --activate
 # Some platforms (Coolify, Dokku and similar) inject NODE_ENV=production as a *build-time*
 # variable. pnpm reads that the same as `--prod` and silently skips devDependencies — here that
 # would drop typescript, tailwindcss and @tailwindcss/postcss, all of which `next build` needs.
-# Forced back to production in the runner stage.
+#
+# Scoped to the install step only, and flipped back to production before `next build` below:
+# leaving it as development through the build makes Next warn about a non-standard NODE_ENV and
+# then fail prerendering /_global-error, because the build runs against React's development
+# bundle. NODE_ENV only affects what pnpm *installs*, so switching it afterwards is safe —
+# devDependencies are already on disk by then.
 ENV NODE_ENV=development
 
 # Workspace manifests + lockfile first, so the install layer survives source edits.
@@ -43,6 +48,9 @@ COPY packages/config/ packages/config/
 COPY packages/env/ packages/env/
 COPY packages/ui/ packages/ui/
 COPY apps/web/ apps/web/
+
+# Back to production for the build itself — see the NODE_ENV note above.
+ENV NODE_ENV=production
 
 RUN pnpm --filter web build
 
