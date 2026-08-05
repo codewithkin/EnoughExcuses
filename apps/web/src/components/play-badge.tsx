@@ -3,7 +3,10 @@ type PlayBadgeProps = {
   className?: string;
 };
 
-export function PlayBadge({ href = "#", className = "" }: PlayBadgeProps) {
+const PLAY_STORE_URL =
+  "https://play.google.com/store/apps/details?id=com.codewithkin.excuseless";
+
+export function PlayBadge({ href = PLAY_STORE_URL, className = "" }: PlayBadgeProps) {
   return (
     <a
       href={href}

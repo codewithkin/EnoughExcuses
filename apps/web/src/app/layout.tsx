@@ -22,21 +22,22 @@ const mono = JetBrains_Mono({
   weight: ["400", "500"],
 });
 
+const title = "ExcuseLess — Stop making excuses. Start getting things done.";
 const description =
   "A focus app that drops you into one task with the timer already running. Do it, mark it, next. Keep your streak alive. Discipline, made visible.";
 
 export const metadata: Metadata = {
-  title: "LockedIn — Stop scrolling. Start executing.",
+  title,
   description,
   openGraph: {
-    title: "LockedIn — Stop scrolling. Start executing.",
+    title,
     description,
-    siteName: "LockedIn",
+    siteName: "ExcuseLess",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "LockedIn — Stop scrolling. Start executing.",
+    title,
     description,
   },
 };
