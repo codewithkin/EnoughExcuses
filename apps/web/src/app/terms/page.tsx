@@ -20,6 +20,21 @@ export default function Terms() {
         </p>
       </Section>
 
+      <Section title="Who you're dealing with">
+        <p>
+          ExcuseLess is built and owned by Kin Leon Zinzombe (&quot;we&quot;, &quot;us&quot;). All
+          rights in the app belong to us.
+        </p>
+        <p>
+          The app is distributed on the Apple App Store and Google Play through the developer
+          account of Wyven Technologies (private) limited, which publishes it on our behalf. That
+          means Wyven&apos;s name may appear as the seller or developer on those store listings.
+          Wyven acts purely as the publisher of record — it does not own the app, does not control
+          how it works, and does not receive or process your data. Questions about the app, these
+          terms, or your data should come to us at the address at the bottom of this page.
+        </p>
+      </Section>
+
       <Section title="What ExcuseLess is">
         <p>
           ExcuseLess is a personal focus and task-tracking app. You create goals, break them into
@@ -49,7 +64,7 @@ export default function Terms() {
           <a href="/privacy" className="text-green hover:text-green-bright">
             Privacy Policy
           </a>
-          , we never receive it.
+          , neither we nor our publisher ever receive it.
         </p>
         <p>
           Because it lives only on your device, you are solely responsible for it. If you lose your

@@ -17,7 +17,8 @@
           "android": {
             "enableProguardInReleaseBuilds": true,
             "enableShrinkResourcesInReleaseBuilds": true,
-            "enableMinifyInReleaseBuilds": true
+            "enableMinifyInReleaseBuilds": true,
+            "extraProguardRules": "# @expo/ui@57 is installed against expo-modules-core@56 (SDK 56), and its\n# Android Compose helper references expo.modules.kotlin.types.ColorCompat,\n# which only exists in core 57. R8 treats the missing reference as fatal in\n# release builds. The affected path (expo.modules.ui.UtilsKt) is Android\n# Compose only — this app uses @expo/ui exclusively for the iOS widgets and\n# Live Activity, so the class is never reached at runtime on Android.\n-dontwarn expo.modules.kotlin.types.ColorCompat\n-dontwarn expo.modules.kotlin.types.ColorCompat$Companion\n-dontwarn expo.modules.ui.**\n"
           }
         }
       ],

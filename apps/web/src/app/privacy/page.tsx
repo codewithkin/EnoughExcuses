@@ -26,6 +26,20 @@ export default function Privacy() {
         </p>
       </Section>
 
+      <Section title="Who this policy is from">
+        <p>
+          ExcuseLess is built and owned by Kin Leon Zinzombe, who is responsible for this policy and
+          for how the app handles data.
+        </p>
+        <p>
+          The app is published to the Apple App Store and Google Play through the developer account
+          of Wyven Technologies (private) limited, so that name may appear as the seller or
+          developer on the store listing. Wyven is the publisher of record only — it does not
+          receive, store, or process any of your data, and it has no access to anything the app
+          keeps on your device.
+        </p>
+      </Section>
+
       <Section title="What stays on your device">
         <p>
           The following is written to your device&apos;s secure storage and never transmitted to us
