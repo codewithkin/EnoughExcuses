@@ -8,7 +8,7 @@ import { AnimatedRow, Card, SectionLabel } from "@/components/primitives";
 import { Screen, ScreenHeader } from "@/components/screen";
 import { Body, BodyMuted, BodyStrong, Caption, Timer, Title } from "@/components/typography";
 import { dayKey, enumerateDays, formatDuration } from "@/lib/date";
-import { usePurchases } from "@/lib/purchases";
+import { PAYMENTS_ENABLED, usePurchases } from "@/lib/purchases";
 import { useApp } from "@/lib/store";
 import { type DayRecord } from "@/lib/types";
 import { COLORS, RADIUS } from "@/lib/theme";
@@ -82,32 +82,37 @@ export default function Streak() {
         <MiniStat label="Focus" value={formatDuration(totalFocusSeconds)} />
       </View>
 
-      <Pressable
-        onPress={openProCta}
-        style={({ pressed }) => ({
-          marginTop: 12,
-          flexDirection: "row",
-          alignItems: "center",
-          gap: 12,
-          borderRadius: RADIUS.x2,
-          borderWidth: 1,
-          borderColor: COLORS.coralDeep,
-          backgroundColor: "rgba(52,211,153,0.06)",
-          padding: 16,
-          opacity: pressed ? 0.8 : 1,
-        })}
-      >
-        <Ionicons name={isPro ? "checkmark-circle" : "sparkles"} size={18} color={COLORS.coral} />
-        <View style={{ flex: 1 }}>
-          <BodyStrong style={{ fontSize: 14 }}>
-            {isPro ? "ExcuseLess Pro" : "Unlock history, templates & sync"}
-          </BodyStrong>
-          <Caption style={{ marginTop: 2 }}>
-            {isPro ? "Active · tap to manage your subscription" : "Go Pro, keep the streak alive"}
-          </Caption>
-        </View>
-        <Ionicons name="chevron-forward" size={18} color={COLORS.subtle} />
-      </Pressable>
+      {/* Hidden entirely while payments are off — otherwise every user is
+          treated as entitled and this would advertise an "Active" subscription
+          that doesn't exist, with a button that does nothing. */}
+      {PAYMENTS_ENABLED ? (
+        <Pressable
+          onPress={openProCta}
+          style={({ pressed }) => ({
+            marginTop: 12,
+            flexDirection: "row",
+            alignItems: "center",
+            gap: 12,
+            borderRadius: RADIUS.x2,
+            borderWidth: 1,
+            borderColor: COLORS.coralDeep,
+            backgroundColor: "rgba(52,211,153,0.06)",
+            padding: 16,
+            opacity: pressed ? 0.8 : 1,
+          })}
+        >
+          <Ionicons name={isPro ? "checkmark-circle" : "sparkles"} size={18} color={COLORS.coral} />
+          <View style={{ flex: 1 }}>
+            <BodyStrong style={{ fontSize: 14 }}>
+              {isPro ? "ExcuseLess Pro" : "Unlock history, templates & sync"}
+            </BodyStrong>
+            <Caption style={{ marginTop: 2 }}>
+              {isPro ? "Active · tap to manage your subscription" : "Go Pro, keep the streak alive"}
+            </Caption>
+          </View>
+          <Ionicons name="chevron-forward" size={18} color={COLORS.subtle} />
+        </Pressable>
+      ) : null}
 
       <View style={{ marginTop: 24 }}>
         <SectionLabel>History</SectionLabel>

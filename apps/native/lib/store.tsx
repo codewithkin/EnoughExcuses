@@ -2,7 +2,7 @@ import React, { createContext, useCallback, useContext, useEffect, useMemo, useS
 import { AppState } from "react-native";
 
 import { dayKey, isToday, isYesterday, newId } from "./date";
-import { loadState, saveState } from "./storage";
+import { clearState, loadState, saveState } from "./storage";
 import {
   type DayRecord,
   type FocusSession,
@@ -50,6 +50,7 @@ type AppContextType = {
   setPrimaryGoal: (id: string) => void;
   setTimerStyle: (style: TimerStyle) => void;
   setNotificationPref: (key: keyof NotificationPrefs, value: boolean) => void;
+  resetAllData: () => Promise<void>;
 };
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -445,6 +446,14 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     );
   }, []);
 
+  // Wipes everything from device storage and returns the app to a fresh
+  // install state. Surfaced in Settings — both stores expect users to be
+  // able to delete their own data, and our privacy policy promises it.
+  const resetAllData = useCallback(async () => {
+    await clearState();
+    setState({ ...emptyState, onboarded: true });
+  }, []);
+
   const currentTask = useMemo(
     () =>
       state.activeTaskId
@@ -495,6 +504,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       setPrimaryGoal,
       setTimerStyle,
       setNotificationPref,
+      resetAllData,
     }),
     [
       ready,
@@ -523,6 +533,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       setPrimaryGoal,
       setTimerStyle,
       setNotificationPref,
+      resetAllData,
     ],
   );
 

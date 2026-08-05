@@ -10,6 +10,8 @@ export const COLORS = {
   green: "#34D399",
   greenBright: "#6EE7B7",
   greenDeep: "#059669",
+  // Destructive actions (reset data, delete confirmations).
+  danger: "#E5484D",
   // Deprecated aliases: kept so existing references resolve to the new green.
   coral: "#34D399",
   coralBright: "#6EE7B7",
